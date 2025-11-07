@@ -49,12 +49,12 @@ alwaysApply: true
 - [x] Test endpoints with curl
 
 ### 1.4 Frontend UI
-- [ ] Create `client/src/pages/TeamSetupPage.tsx`
-- [ ] Add form: team name, sprint size
-- [ ] Add member list with add/remove functionality
-- [ ] Member fields: firstName, lastName, velocityWeight
-- [ ] Add "Set as Default Team" button
-- [ ] Style with TailwindCSS
+- [x] Create `client/src/pages/TeamSetupPage.tsx`
+- [x] Add form: team name, sprint size
+- [x] Add member list with add/remove functionality
+- [x] Member fields: firstName, lastName, velocityWeight
+- [x] Add "Set as Default Team" button
+- [x] Style with TailwindCSS
 
 ### 1.5 Connect UI to API
 - [ ] Add team API methods to `api.ts`
