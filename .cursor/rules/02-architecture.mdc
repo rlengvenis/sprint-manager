@@ -1,0 +1,52 @@
+---
+alwaysApply: true
+---
+
+## Code style rules
+- Write only code that is needed, do smallest changes possible
+- Write clean, readable, and maintainable code
+- Follow DRY (Don't Repeat Yourself) principles
+- Keep functions small and focused on a single responsibility
+- Use meaningful variable and function names that clearly convey intent
+- Add comments only when necessary to explain "why", not "what"
+- Use up to date tech stack
+- Respect project structure
+
+
+## Project structure
+- Exact 
+```
+sprint-app/
+├── public/
+│   └── index.html
+├── src/
+│   ├── components/
+│   │   ├── 
+│   │   └── 
+│   ├── services/
+│   │   └── 
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── server/
+│   ├── models/
+│   │   ├── 
+│   │   └──
+│   ├── routes/
+│   │   └── 
+│   │   └──
+│   ├── db/
+│   │   └── 
+│   └── index.js                // Express server
+├── package.json
+├── vite.config.js
+└── tailwind.config.js
+```
+
+
+## Project stack
+- **Frontend**: React TS with Vite (minimal setup)
+- **Backend**: Express.js
+- **Database**: MongoDB
+- **Styling**: TailwindCSS
+- **Icons**: react-icons

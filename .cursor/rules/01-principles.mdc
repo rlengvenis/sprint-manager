@@ -1,0 +1,19 @@
+---
+alwaysApply: true
+---
+
+## When Making Changes
+1. Understand the existing code and patterns first
+2. Follow the established architecture and conventions
+3. Test your changes thoroughly
+4. Update documentation if needed
+5. Consider backward compatibility
+6. Check for linting and type errors
+7. Review your changes before committing
+
+## Questions to Ask Before Implementing
+- Does this follow the existing patterns in the codebase?
+- Is this the simplest solution that could work?
+- Have I considered edge cases?
+- Is this properly typed/validated?
+- Have I added appropriate error handling?

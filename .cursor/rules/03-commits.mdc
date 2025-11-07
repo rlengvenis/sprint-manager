@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+- Use semantic versioning for commints
+- Make commits succint and easy to read quickly
