@@ -1,0 +1,42 @@
+# Sprint Velocity Predictor App
+
+A lean React application for sprint planning and velocity prediction.
+
+## Project Overview
+
+This application helps agile teams plan sprints by:
+- Tracking team member availability per sprint
+- Predicting sprint velocity based on historical data using median
+- Displaying sprint history and performance metrics
+
+## Pages
+### Landing page
+- show top navigation bar to all other pages
+- show current sprint forecast in the main section or empty page if one is not yet set
+
+### Team setup page
+- Add team name
+- Add team member name/surname & velocity constant
+- Select default team to operate for other pages
+
+### Add sprint availability page
+Create form to:
+- Input sprint name
+- Set how many working days person is off
+- Add bank holidays if there are any
+- Add comment relative to this sprint
+- At the end of the sprint be able to add actual story points completed
+
+### Show sprint forecast page
+Once data is added:
+- Display team days available 
+- Show velocity forecast based on median of previous sprints data
+
+### Show Sprint History history
+Open history page
+- Table of recent sprints containing
+- Days available per sprint
+- Forecast vs actual story points
+- Velocity calculation
+- Prediction accuracy
+
