@@ -9,10 +9,9 @@ alwaysApply: true
 ### 0.1 Client Hello World
 - [x] React TypeScript app with Vite created in `client/`
 - [x] Install TailwindCSS and configure
-- [ ] Install React Router DOM
-- [ ] Install react-icons
+- [x] Install React Router DOM
 - [x] Create basic App with "Sprint Manager" heading
-- [ ] Verify dev server works
+- [x] Verify dev server works
 
 ### 0.2 Server Hello World
 - [ ] Create `server/index.js` with Express
