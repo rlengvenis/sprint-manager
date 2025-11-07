@@ -40,3 +40,53 @@ Open history page
 - Velocity calculation
 - Prediction accuracy
 
+## Data Model
+
+### Team
+```typescript
+{
+  id: string
+  name: string
+  sprintSizeInDays: number
+  members: TeamMember[]
+  isDefault: boolean
+  createdAt: Date
+}
+```
+
+### TeamMember
+```typescript
+{
+  id: string
+  firstName: string
+  lastName: string
+  velocityWeight: number  // Individual velocity multiplier (e.g., 0.8 for 80% capacity)
+  teamId: string
+}
+```
+
+### Sprint
+```typescript
+{
+  id: string
+  name: string
+  teamId: string
+  bankHolidays: number    // Days that apply to entire team
+  memberAvailability: MemberAvailability[]
+  comment: string
+  totalDaysAvailable: number        // Sum of (sprintDuration - memberDaysOff - bankHolidays) * velocityWeight
+  forecastVelocity: number          // Median velocity from past sprints * totalDaysAvailable
+  actualVelocity: number | null  // null until sprint is completed
+  createdAt: Date
+  completedAt: Date | null
+}
+```
+Note: Sprint duration is inherited from `Team.sprintSizeInDays`
+
+### MemberAvailability
+```typescript
+{
+  memberId: string
+  daysOff: number  // Individual days off for this sprint
+}
+```
