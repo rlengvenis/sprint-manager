@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { api } from '../services/api';
 
 interface MemberForm {
   firstName: string;
@@ -11,6 +12,9 @@ export default function TeamSetupPage() {
   const [sprintSize, setSprintSize] = useState(10);
   const [isDefault, setIsDefault] = useState(false);
   const [members, setMembers] = useState<MemberForm[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const addMember = () => {
     setMembers([...members, { firstName: '', lastName: '', velocityWeight: 1.0 }]);
@@ -28,8 +32,31 @@ export default function TeamSetupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Connect to API
-    console.log({ teamName, sprintSize, isDefault, members });
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const teamData = {
+        name: teamName,
+        sprintSizeInDays: sprintSize,
+        isDefault,
+        members,
+      };
+
+      const result = await api.teams.create(teamData);
+      setSuccess(`Team "${result.name}" created successfully!`);
+      
+      // Clear form
+      setTeamName('');
+      setSprintSize(10);
+      setIsDefault(false);
+      setMembers([]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create team');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -37,12 +64,28 @@ export default function TeamSetupPage() {
     setSprintSize(10);
     setIsDefault(false);
     setMembers([]);
+    setError(null);
+    setSuccess(null);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Team Setup Page</h1>
+
+        {/* Success Message */}
+        {success && (
+          <div className="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md">
+            {success}
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Team Information */}
@@ -191,15 +234,17 @@ export default function TeamSetupPage() {
             <button
               type="button"
               onClick={handleCancel}
-              className="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              disabled={loading}
+              className="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Save Team
+              {loading ? 'Saving...' : 'Save Team'}
             </button>
           </div>
         </form>

@@ -18,5 +18,19 @@ async function fetchAPI(endpoint: string, options?: RequestInit) {
 
 export const api = {
   health: () => fetchAPI('/health'),
+  
+  // Team endpoints
+  teams: {
+    getAll: () => fetchAPI('/teams'),
+    getById: (id: string) => fetchAPI(`/teams/${id}`),
+    getDefault: () => fetchAPI('/teams/default'),
+    create: (data: any) => fetchAPI('/teams', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+    setDefault: (id: string) => fetchAPI(`/teams/${id}/default`, {
+      method: 'PATCH',
+    }),
+  },
 };
 

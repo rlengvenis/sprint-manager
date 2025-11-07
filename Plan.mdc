@@ -57,11 +57,11 @@ alwaysApply: true
 - [x] Style with TailwindCSS
 
 ### 1.5 Connect UI to API
-- [ ] Add team API methods to `api.ts`
-- [ ] Implement form submission
-- [ ] Display created teams
-- [ ] Add loading and error states
-- [ ] Test full flow: create team → save to DB → display
+- [x] Add team API methods to `api.ts`
+- [x] Implement form submission
+- [x] Display success/error messages
+- [x] Add loading and error states
+- [x] Test full flow: create team → save to DB → display
 
 ---
 
