@@ -16,13 +16,13 @@ This application helps agile teams plan sprints by:
 
 ### Team setup page
 - Add team name
-- Add team member name/surname & velocity constant
-- Select default team to operate for other pages
+- Add team member name/surname
+- Add team member individual velocity weight (multiple OOO days)
+- Set print size in days
 
 ### Add sprint availability page
-Create form to:
 - Input sprint name
-- Set how many working days person is off
+- Set how many working days each person is off during a sprint
 - Add bank holidays if there are any
 - Add comment relative to this sprint
 - At the end of the sprint be able to add actual story points completed
