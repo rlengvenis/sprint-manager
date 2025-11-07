@@ -1,235 +1,225 @@
-# Implementation Plan v2
+---
+alwaysApply: true
+---
 
-## Phase 1: Project Initialization (30 min)
+# Implementation Plan - Feature by Feature
 
-### 1.1 Initialize Vite Project
-- [ ] Create React TypeScript app with Vite
-- [ ] Verify hot reload works
+## Step 0: Hello World Setup (30-45 min)
 
-### 1.2 Install Core Dependencies
-- [ ] Install React Router DOM for navigation
-- [ ] Install TailwindCSS for styling
-- [ ] Install react-icons for UI icons
-- [ ] Configure Tailwind
+### 0.1 Client Hello World
+- [x] React TypeScript app with Vite created in `client/`
+- [ ] Install TailwindCSS and configure
+- [ ] Install React Router DOM
+- [ ] Install react-icons
+- [ ] Create basic App with "Sprint Manager" heading
+- [ ] Verify dev server works
 
-### 1.3 Setup Project Structure
-```
-sprint-app/
-├── src/
-│   ├── components/       # React components
-│   ├── pages/           # Page components
-│   ├── types/           # TypeScript interfaces
-│   ├── utils/           # Helper functions
-│   ├── App.tsx
-│   └── main.tsx
-├── server/              # Backend (Phase 4)
-└── package.json
-```
+### 0.2 Server Hello World
+- [ ] Create `server/index.js` with Express
+- [ ] Install dependencies: express, cors, dotenv, mongoose
+- [ ] Setup basic Express server on port 5000
+- [ ] Add CORS middleware
+- [ ] Create GET `/api/health` endpoint that returns `{ status: "ok" }`
+- [ ] Verify server runs and endpoint responds
 
-## Phase 2: Static Frontend (2-3 hours)
-
-### 2.1 Setup Routing & Layout
-- [ ] Create App.tsx with React Router
-- [ ] Create navigation bar component
-- [ ] Setup routes:
-  - `/` - Landing page
-  - `/team-setup` - Team setup
-  - `/sprint-planning` - Add sprint
-  - `/forecast` - Show forecast
-  - `/history` - Sprint history
-
-### 2.2 Build Page Components (Static UI First)
-- [ ] **LandingPage.tsx** - Empty state with nav
-- [ ] **TeamSetupPage.tsx**
-  - Form: team name input
-  - Form: sprint size (days) input
-  - List of team members with add/remove
-  - Member fields: firstName, lastName, velocityWeight
-  - Button: Set as default team
-- [ ] **SprintPlanningPage.tsx**
-  - Form: sprint name
-  - Form: bank holidays (number)
-  - List: each member with days off input
-  - Textarea: comment
-  - Button: Create sprint
-- [ ] **ForecastPage.tsx**
-  - Display: current sprint name
-  - Display: total days available
-  - Display: forecast velocity (from median)
-  - Form: add actual velocity (when sprint complete)
-- [ ] **HistoryPage.tsx**
-  - Table with columns:
-    - Sprint name
-    - Total days available
-    - Forecast velocity
-    - Actual velocity
-    - Accuracy %
-    - Comment
-
-### 2.3 Basic Styling
-- [ ] Apply TailwindCSS utilities for clean, modern look
-- [ ] Make forms readable and spacious
-- [ ] Add basic responsive design
-- [ ] Add icons from react-icons
-
-## Phase 3: Frontend Logic with Local State (2-3 hours)
-
-### 3.1 Create TypeScript Types
-- [ ] Create `types/index.ts` with interfaces:
-  - Team
-  - TeamMember
-  - Sprint
-  - MemberAvailability
-
-### 3.2 Create Calculation Utilities
-- [ ] Create `utils/calculations.ts`:
-  - `calculateTotalDaysAvailable(team, sprint)` → number
-  - `calculateMedianVelocity(sprints)` → number
-  - `calculateForecastVelocity(historicalSprints, currentSprint)` → number
-  - `calculateAccuracy(forecast, actual)` → number
-
-### 3.3 Add Local State Management
-- [ ] Create React Context for state (`TeamContext`)
-- [ ] Store teams array in context
-- [ ] Store sprints array in context
-- [ ] Store current/default team
-- [ ] Implement CRUD operations in context:
-  - createTeam()
-  - addMemberToTeam()
-  - createSprint()
-  - updateSprintWithActual()
-
-### 3.4 Connect Components to State
-- [ ] TeamSetupPage: create teams, add members
-- [ ] SprintPlanningPage: create sprints with calculations
-- [ ] ForecastPage: show current sprint (latest without actualVelocity)
-- [ ] HistoryPage: show completed sprints with accuracy
-- [ ] LandingPage: show current sprint if exists
-
-### 3.5 Add localStorage Persistence
-- [ ] Save state to localStorage on changes
-- [ ] Load state from localStorage on mount
-- [ ] Handle empty/initial state
-
-## Phase 4: Backend & Database (3-4 hours)
-
-### 4.1 Setup Express Server
-- [ ] Create `server/index.js`
-- [ ] Install: express, mongoose, cors, dotenv
-- [ ] Setup Express with CORS
-- [ ] Setup port configuration
-- [ ] Create health check endpoint
-
-### 4.2 Setup MongoDB Connection
-- [ ] Install Mongoose
-- [ ] Create `server/db/connection.js`
-- [ ] Add connection string to .env
-- [ ] Test connection
-
-### 4.3 Create Mongoose Schemas
-- [ ] Create `server/models/Team.js`
-- [ ] Create `server/models/Sprint.js`
-- [ ] Define schema validations
-- [ ] Add timestamps
-
-### 4.4 Create API Routes
-- [ ] Create `server/routes/teams.js`:
-  - GET /api/teams - list all teams
-  - GET /api/teams/:id - get team by id
-  - POST /api/teams - create team
-  - POST /api/teams/:id/members - add member
-  - GET /api/teams/default - get default team
-  
-- [ ] Create `server/routes/sprints.js`:
-  - GET /api/sprints?teamId=X - list sprints for team
-  - GET /api/sprints/:id - get sprint by id
-  - POST /api/sprints - create sprint
-  - PATCH /api/sprints/:id/complete - add actual velocity
-  - GET /api/sprints/current?teamId=X - get current sprint
-
-### 4.5 Integrate Routes with Server
-- [ ] Mount routes in server/index.js
-- [ ] Test all endpoints with curl or Postman
-
-## Phase 5: Connect Frontend to Backend (2 hours)
-
-### 5.1 Create API Service
-- [ ] Create `src/services/api.ts`
-- [ ] Implement fetch wrappers for all endpoints
-- [ ] Add error handling
-- [ ] Add loading states
-
-### 5.2 Replace Context with API Calls
-- [ ] TeamSetupPage: call API instead of local state
-- [ ] SprintPlanningPage: call API to create sprints
-- [ ] ForecastPage: fetch current sprint from API
-- [ ] HistoryPage: fetch completed sprints from API
-- [ ] Remove localStorage, use database
-
-### 5.3 Add Loading & Error States
-- [ ] Add loading spinners to all pages
-- [ ] Display error messages on API failures
-- [ ] Handle empty states gracefully
-
-## Phase 6: Polish & Testing (1-2 hours)
-
-### 6.1 Manual Testing
-- [ ] Test full flow: create team → add members → create sprint → complete sprint
-- [ ] Test with multiple teams
-- [ ] Test with multiple sprints (verify median calculation)
-- [ ] Test edge cases (no history, zero days, etc.)
-
-### 6.2 UI/UX Improvements
-- [ ] Add confirmation messages on successful actions
-- [ ] Improve form validation and error display
-- [ ] Add better empty states
-- [ ] Polish responsive design
-
-### 6.3 Code Cleanup
-- [ ] Remove console.logs
-- [ ] Fix any TypeScript errors
-- [ ] Check for unused imports
-- [ ] Ensure consistent code style
-
-### 6.4 Documentation
-- [ ] Update README with:
-  - Setup instructions
-  - Environment variables needed
-  - How to run frontend & backend
-  - Tech stack overview
-
-## Phase 7: Deployment (Optional)
-
-### 7.1 Prepare for Deployment
-- [ ] Setup MongoDB Atlas account
-- [ ] Configure production environment variables
-- [ ] Build optimized frontend bundle
-
-### 7.2 Deploy
-- [ ] Deploy backend to Railway/Render/Heroku
-- [ ] Deploy frontend to Vercel/Netlify
-- [ ] Test production deployment
+### 0.3 Client-Server Connection
+- [ ] Create `client/src/services/api.ts` with fetch helper
+- [ ] Call `/api/health` from React app
+- [ ] Display server status in UI
+- [ ] Verify full stack communication works
 
 ---
 
-## Estimation Summary
+## Feature 1: Team Setup (2-3 hours)
 
-- Phase 1: 30 minutes
-- Phase 2: 2-3 hours
-- Phase 3: 2-3 hours
-- Phase 4: 3-4 hours
-- Phase 5: 2 hours
-- Phase 6: 1-2 hours
-- **Total: ~12-16 hours**
+### 1.1 TypeScript Types
+- [ ] Create `client/src/types/index.ts`
+- [ ] Define Team, TeamMember interfaces
+
+### 1.2 Database Setup
+- [ ] Setup MongoDB connection in `server/db/connection.js`
+- [ ] Create Team model in `server/models/Team.js`
+- [ ] Test DB connection
+
+### 1.3 Backend API
+- [ ] Create `server/routes/teams.js`
+- [ ] POST `/api/teams` - create team with members
+- [ ] GET `/api/teams` - list all teams
+- [ ] GET `/api/teams/:id` - get team by id
+- [ ] PATCH `/api/teams/:id/default` - set as default team
+- [ ] Test endpoints with curl
+
+### 1.4 Frontend UI
+- [ ] Create `client/src/pages/TeamSetupPage.tsx`
+- [ ] Add form: team name, sprint size
+- [ ] Add member list with add/remove functionality
+- [ ] Member fields: firstName, lastName, velocityWeight
+- [ ] Add "Set as Default Team" button
+- [ ] Style with TailwindCSS
+
+### 1.5 Connect UI to API
+- [ ] Add team API methods to `api.ts`
+- [ ] Implement form submission
+- [ ] Display created teams
+- [ ] Add loading and error states
+- [ ] Test full flow: create team → save to DB → display
+
+---
+
+## Feature 2: Sprint Planning (2-3 hours)
+
+### 2.1 TypeScript Types
+- [ ] Add Sprint, MemberAvailability interfaces to `types/index.ts`
+
+### 2.2 Calculation Utilities
+- [ ] Create `client/src/utils/calculations.ts`
+- [ ] Implement `calculateTotalDaysAvailable()`
+- [ ] Implement `calculateMedianVelocity()`
+- [ ] Implement `calculateForecastVelocity()`
+- [ ] Add unit tests or manual verification
+
+### 2.3 Backend API
+- [ ] Create Sprint model in `server/models/Sprint.js`
+- [ ] Create `server/routes/sprints.js`
+- [ ] POST `/api/sprints` - create sprint with calculations
+- [ ] GET `/api/sprints?teamId=X` - list sprints for team
+- [ ] GET `/api/sprints/current?teamId=X` - get current sprint
+- [ ] Test endpoints
+
+### 2.4 Frontend UI
+- [ ] Create `client/src/pages/SprintPlanningPage.tsx`
+- [ ] Add form: sprint name, bank holidays
+- [ ] Display team members with days off inputs
+- [ ] Add comment textarea
+- [ ] Show calculated forecast before submission
+- [ ] Style form with TailwindCSS
+
+### 2.5 Connect UI to API
+- [ ] Add sprint API methods to `api.ts`
+- [ ] Implement sprint creation with calculations
+- [ ] Handle team member availability input
+- [ ] Add validation and error handling
+- [ ] Test: create sprint → verify calculations → save to DB
+
+---
+
+## Feature 3: Sprint Forecast Display (1-2 hours)
+
+### 3.1 Backend API
+- [ ] GET `/api/sprints/:id` - get sprint details
+- [ ] Ensure forecast data is returned correctly
+
+### 3.2 Frontend UI
+- [ ] Create `client/src/pages/ForecastPage.tsx`
+- [ ] Display current sprint name
+- [ ] Show total days available
+- [ ] Show forecast velocity
+- [ ] Add form to input actual velocity when sprint completes
+- [ ] Style with TailwindCSS cards/layout
+
+### 3.3 Connect UI to API
+- [ ] Fetch current sprint on page load
+- [ ] PATCH `/api/sprints/:id/complete` - add actual velocity
+- [ ] Update sprint completion in backend
+- [ ] Show success message on completion
+- [ ] Test: view forecast → complete sprint → verify update
+
+---
+
+## Feature 4: Sprint History (1-2 hours)
+
+### 4.1 Calculation Utilities
+- [ ] Add `calculateAccuracy(forecast, actual)` to `calculations.ts`
+
+### 4.2 Backend API
+- [ ] GET `/api/sprints/history?teamId=X` - get completed sprints
+- [ ] Return sprints with accuracy calculations
+
+### 4.3 Frontend UI
+- [ ] Create `client/src/pages/HistoryPage.tsx`
+- [ ] Build table with columns:
+  - Sprint name
+  - Total days available
+  - Forecast velocity
+  - Actual velocity
+  - Accuracy %
+  - Comment
+- [ ] Style table with TailwindCSS
+- [ ] Add sorting/filtering if needed
+
+### 4.4 Connect UI to API
+- [ ] Fetch history data on page load
+- [ ] Display accuracy percentages
+- [ ] Add empty state for no history
+- [ ] Test with multiple completed sprints
+
+---
+
+## Feature 5: Navigation & Landing Page (1 hour)
+
+### 5.1 Navigation
+- [ ] Create `client/src/components/Navigation.tsx`
+- [ ] Add links to all pages: Home, Team Setup, Sprint Planning, Forecast, History
+- [ ] Style navbar with TailwindCSS
+- [ ] Add active route highlighting
+
+### 5.2 Landing Page
+- [ ] Create `client/src/pages/LandingPage.tsx`
+- [ ] Display current sprint forecast if exists
+- [ ] Show empty state if no sprint
+- [ ] Add quick action buttons
+- [ ] Style with hero section layout
+
+### 5.3 Routing Setup
+- [ ] Setup React Router in `App.tsx`
+- [ ] Configure all routes
+- [ ] Add Navigation to layout
+- [ ] Test navigation between all pages
+
+---
+
+## Feature 6: Polish & Testing (1-2 hours)
+
+### 6.1 Manual Testing
+- [ ] Test full user flow end-to-end
+- [ ] Create team → add members
+- [ ] Create multiple sprints
+- [ ] Complete sprints with actuals
+- [ ] Verify median calculation with 3+ sprints
+- [ ] Test edge cases (no data, zero values)
+
+### 6.2 UI/UX Polish
+- [ ] Add loading spinners
+- [ ] Improve error messages
+- [ ] Add success notifications/toasts
+- [ ] Ensure responsive design works on mobile
+- [ ] Add icons from react-icons
+- [ ] Polish form validation
+
+### 6.3 Code Cleanup
+- [ ] Remove console.logs
+- [ ] Fix linter errors
+- [ ] Remove unused imports
+- [ ] Ensure consistent formatting
+
+### 6.4 Documentation
+- [ ] Create README.md with:
+  - Project overview
+  - Setup instructions (client + server)
+  - Environment variables
+  - How to run locally
+  - Tech stack
+
+---
 
 ## Key Principles
 
-1. **Build incrementally** - Each phase should produce working code
-2. **Test early** - Verify calculations before connecting to database
-3. **Keep it lean** - No over-engineering, minimal features
-4. **Static UI first** - Build pages with mock data before adding logic
-5. **Local state before backend** - Prove the logic works before adding complexity
+1. **Complete features end-to-end** - Each feature is fully functional before moving to next
+2. **Test as you build** - Verify each piece works before continuing
+3. **Simplest solution first** - No over-engineering
+4. **Database-first after hello world** - Build full stack for each feature
+5. **Visual feedback** - User always knows what's happening
 
 ## Next Steps
 
-Start with Phase 1: Initialize the Vite project and verify hot reload works.
+Start with Step 0: Get both client and server running and talking to each other.

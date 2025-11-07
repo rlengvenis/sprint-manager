@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Sprint Velocity Predictor App
 
 A lean React application for sprint planning and velocity prediction.

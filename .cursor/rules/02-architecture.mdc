@@ -13,39 +13,8 @@ alwaysApply: true
 - Respect project structure
 
 
-## Project structure
-- Exact 
-```
-sprint-app/
-├── public/
-│   └── index.html
-├── src/
-│   ├── components/
-│   │   ├── 
-│   │   └── 
-│   ├── services/
-│   │   └── 
-│   ├── App.tsx
-│   ├── main.tsx
-│   └── index.css
-├── server/
-│   ├── models/
-│   │   ├── 
-│   │   └──
-│   ├── routes/
-│   │   └── 
-│   │   └──
-│   ├── db/
-│   │   └── 
-│   └── index.js                // Express server
-├── package.json
-├── vite.config.js
-└── tailwind.config.js
-```
-
-
 ## Project stack
-- **Frontend**: React TS with Vite (minimal setup)
+- **Frontend**: React TS with Next.js
 - **Backend**: Express.js
 - **Database**: MongoDB
 - **Styling**: TailwindCSS
