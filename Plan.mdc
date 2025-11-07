@@ -14,18 +14,18 @@ alwaysApply: true
 - [x] Verify dev server works
 
 ### 0.2 Server Hello World
-- [ ] Create `server/index.js` with Express
-- [ ] Install dependencies: express, cors, dotenv, mongoose
-- [ ] Setup basic Express server on port 5000
-- [ ] Add CORS middleware
-- [ ] Create GET `/api/health` endpoint that returns `{ status: "ok" }`
-- [ ] Verify server runs and endpoint responds
+- [x] Create `server/index.js` with Express
+- [x] Install dependencies: express, cors, dotenv, mongoose
+- [x] Setup basic Express server on port 5001 (5000 taken by AirPlay)
+- [x] Add CORS middleware
+- [x] Create GET `/api/health` endpoint that returns `{ status: "ok" }`
+- [x] Verify server runs and endpoint responds
 
 ### 0.3 Client-Server Connection
-- [ ] Create `client/src/services/api.ts` with fetch helper
-- [ ] Call `/api/health` from React app
-- [ ] Display server status in UI
-- [ ] Verify full stack communication works
+- [x] Create `client/src/services/api.ts` with fetch helper
+- [x] Call `/api/health` from React app
+- [x] Display server status in UI
+- [x] Verify full stack communication works
 
 ---
 
