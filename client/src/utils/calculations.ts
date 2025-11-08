@@ -105,15 +105,15 @@ export function calculateForecastVelocity(
 
 /**
  * Calculate accuracy percentage between forecast and actual
- * Returns null if actual is not available
+ * Returns the percentage of forecast achieved
+ * Example: forecast=100, actual=95 returns 95%
  */
-export function calculateAccuracy(forecast: number, actual: number | null): number | null {
+export function calculateAccuracy(forecast: number, actual: number | null): number {
   if (actual === null || forecast === 0) {
-    return null;
+    return 0;
   }
 
-  const accuracy = (1 - Math.abs(forecast - actual) / forecast) * 100;
-  return Math.max(0, Math.min(100, accuracy)); // Clamp between 0-100
+  return (actual / forecast) * 100;
 }
 
 /**

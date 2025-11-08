@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SprintPlanningPage from './pages/SprintPlanningPage';
 import TeamSetupPage from './pages/TeamSetupPage';
 import ForecastPage from './pages/ForecastPage';
+import HistoryPage from './pages/HistoryPage';
 
 function App() {
   return (
@@ -36,6 +37,12 @@ function App() {
                 >
                   🎯 Forecast
                 </Link>
+                <Link 
+                  to="/history" 
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
+                >
+                  📊 History
+                </Link>
               </div>
             </div>
           </div>
@@ -47,6 +54,7 @@ function App() {
           <Route path="/team-setup" element={<TeamSetupPage />} />
           <Route path="/planning" element={<SprintPlanningPage />} />
           <Route path="/forecast" element={<ForecastPage />} />
+          <Route path="/history" element={<HistoryPage />} />
         </Routes>
       </div>
     </Router>
