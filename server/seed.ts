@@ -247,15 +247,49 @@ const sprintsData = [
     actualVelocity: 38,
     comment: '',
   },
-  {
-    name: 'Oct 14',
-    memberAvailability: { Andrew: 1, Maarten: 6, Pawel: 0 },
-    totalDaysAvailable: 23,
-    forecastVelocity: 21.44,
-    actualVelocity: 24,
-    comment: '',
-  },
 ];
+
+// ============================================================================
+// HELPER FUNCTION - Parse sprint name to date
+// ============================================================================
+
+/**
+ * Parse sprint name to get start date
+ * Handles formats: "15-Oct", "Oct 14", "April 15", "Apr 2", etc.
+ */
+function parseSprintNameToDate(sprintName: string): Date {
+  const monthMap: Record<string, number> = {
+    'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5,
+    'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
+  };
+
+  // Try format: "15-Oct" or "Oct 14" or "Apr 2"
+  const match1 = sprintName.match(/(\d+)-(\w+)/); // "15-Oct"
+  const match2 = sprintName.match(/(\w+)\s+(\d+)/); // "Oct 14" or "April 15"
+  
+  let day: number;
+  let month: number;
+  let year: number;
+
+  if (match1) {
+    // Format: "15-Oct"
+    day = parseInt(match1[1]);
+    const monthStr = match1[2].toLowerCase().substring(0, 3);
+    month = monthMap[monthStr];
+  } else if (match2) {
+    // Format: "Oct 14" or "April 15"
+    const monthStr = match2[1].toLowerCase().substring(0, 3);
+    month = monthMap[monthStr];
+    day = parseInt(match2[2]);
+  } else {
+    throw new Error(`Cannot parse sprint name: ${sprintName}`);
+  }
+
+  // Determine year: Oct-Dec = 2024, Jan-Sep = 2025
+  year = month >= 9 ? 2024 : 2025;
+
+  return new Date(year, month, day);
+}
 
 // ============================================================================
 // SEED FUNCTION
@@ -303,6 +337,11 @@ async function seed() {
         })
       );
 
+      // Parse sprint start date from name
+      const startDate = parseSprintNameToDate(sprintData.name);
+      const completedDate = new Date(startDate);
+      completedDate.setDate(completedDate.getDate() + 14); // Sprint completes 2 weeks after start
+
       await Sprint.create({
         name: sprintData.name,
         teamId: team._id,
@@ -311,7 +350,8 @@ async function seed() {
         totalDaysAvailable: sprintData.totalDaysAvailable,
         forecastVelocity: sprintData.forecastVelocity,
         actualVelocity: sprintData.actualVelocity,
-        completedAt: new Date(2024, 0, 1 + sprintCount * 14), // Simulated dates, 2 weeks apart
+        createdAt: startDate, // Sprint created on date from name
+        completedAt: completedDate, // Sprint completed 2 weeks later
       });
       
       sprintCount++;
