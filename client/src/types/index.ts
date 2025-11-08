@@ -17,6 +17,9 @@ export interface Team {
 export interface MemberAvailability {
   memberId: string;
   daysOff: number;
+  firstName?: string;
+  lastName?: string;
+  velocityWeight?: number;
 }
 
 export interface Sprint {
@@ -30,5 +33,7 @@ export interface Sprint {
   actualVelocity: number | null;
   createdAt: Date;
   completedAt: Date | null;
+  sprintSizeInDays?: number;
+  teamName?: string;
 }
 

@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
-import type { Sprint, Team } from '../types';
+import type { Sprint } from '../types';
 import { calculateAccuracy } from '../utils/calculations';
 
 export default function StatisticsPage() {
   const [sprints, setSprints] = useState<Sprint[]>([]);
-  const [team, setTeam] = useState<Team | null>(null);
   const [expandedSprintId, setExpandedSprintId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,14 +29,10 @@ export default function StatisticsPage() {
       setLoading(true);
       setError(null);
       
-      // Get the team (there's only one)
-      const teamData = await api.teams.get();
-      setTeam(teamData);
-      
-      // Get completed sprints
+      // Get completed sprints with enriched member data
       const completedSprints = await api.sprints.getHistory();
       setSprints(completedSprints);
-    } catch (err) {
+    } catch {
       setError('Failed to load sprint statistics. Please make sure you have a team set up.');
       setSprints([]);
     } finally {
@@ -59,16 +54,11 @@ export default function StatisticsPage() {
     }
   };
 
-  const calculateMemberDaysAvailable = (sprint: Sprint, memberId: string) => {
-    if (!team) return 0;
+  const calculateMemberDaysAvailable = (availability: Sprint['memberAvailability'][0], sprintLength: number) => {
+    if (!availability.velocityWeight) return 0;
     
-    const member = team.members.find(m => m.id === memberId);
-    const availability = sprint.memberAvailability.find(a => a.memberId === memberId);
-    
-    if (!member || !availability) return 0;
-    
-    const workDays = team.sprintSizeInDays - availability.daysOff;
-    return workDays * member.velocityWeight;
+    const workDays = sprintLength - availability.daysOff;
+    return workDays * availability.velocityWeight;
   };
 
   const calculateSummaryStats = () => {
@@ -115,7 +105,7 @@ export default function StatisticsPage() {
     );
   }
 
-  if (error || !team) {
+  if (error) {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-7xl mx-auto">
@@ -159,14 +149,16 @@ export default function StatisticsPage() {
         <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint Statistics</h1>
 
         {/* Team Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-purple-500">
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800">Team: {team.name}</h2>
-              <p className="text-gray-600">Completed Sprints: {sprints.length}</p>
+        {sprints.length > 0 && sprints[0].teamName && (
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-purple-500">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800">Team: {sprints[0].teamName}</h2>
+                <p className="text-gray-600">Completed Sprints: {sprints.length}</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Summary Statistics */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
@@ -284,16 +276,14 @@ export default function StatisticsPage() {
                               <div className="mt-4">
                                 <h5 className="font-medium text-gray-700 mb-2">Team Availability:</h5>
                                 <div className="space-y-1 text-sm">
-                                  {team.members.map(member => {
-                                    const availability = sprint.memberAvailability.find(a => a.memberId === member.id);
-                                    const daysAvailable = calculateMemberDaysAvailable(sprint, member.id);
-                                    
-                                    if (!availability) return null;
+                                  {sprint.memberAvailability.map((availability) => {
+                                    const sprintLength = sprint.sprintSizeInDays || 10;
+                                    const daysAvailable = calculateMemberDaysAvailable(availability, sprintLength);
                                     
                                     return (
-                                      <div key={member.id} className="flex justify-between py-1">
+                                      <div key={availability.memberId} className="flex justify-between py-1">
                                         <span className="text-gray-700">
-                                          • {member.firstName} {member.lastName} ({member.velocityWeight}x)
+                                          • {availability.firstName} {availability.lastName} ({availability.velocityWeight}x)
                                         </span>
                                         <span className="text-gray-800">
                                           {daysAvailable.toFixed(1)} days

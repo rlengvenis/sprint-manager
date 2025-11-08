@@ -31,7 +31,7 @@ export async function getSprintHistory(): Promise<any[]> {
     throw new Error('Team not found');
   }
 
-  // Enrich sprints with member details
+  // Enrich sprints with member details and sprint size
   const enrichedSprints = sprints.map((sprint) => {
     const sprintObj: any = sprint.toObject();
     
@@ -48,6 +48,9 @@ export async function getSprintHistory(): Promise<any[]> {
         velocityWeight: member?.velocityWeight || 1.0
       };
     });
+    
+    sprintObj.sprintSizeInDays = team.sprintSizeInDays;
+    sprintObj.teamName = team.name;
     
     return sprintObj;
   });
