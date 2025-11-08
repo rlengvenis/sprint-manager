@@ -8,6 +8,11 @@ client/dist/
 client/dist-ssr/
 *.local
 
+# Test coverage
+coverage/
+client/coverage/
+server/coverage/
+
 # Environment variables
 .env
 .env.local
