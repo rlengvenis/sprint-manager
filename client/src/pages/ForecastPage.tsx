@@ -5,6 +5,7 @@ import type { Sprint, Team } from '../types';
 export default function ForecastPage() {
   const [sprint, setSprint] = useState<Sprint | null>(null);
   const [team, setTeam] = useState<Team | null>(null);
+  const [historicalSprints, setHistoricalSprints] = useState<Sprint[]>([]);
   const [actualVelocity, setActualVelocity] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +27,10 @@ export default function ForecastPage() {
       // Then get current sprint for that team
       const currentSprint = await api.sprints.getCurrent(defaultTeam.id);
       setSprint(currentSprint);
+      
+      // Load historical sprints
+      const history = await api.sprints.getHistory(defaultTeam.id);
+      setHistoricalSprints(history);
     } catch (err) {
       setError('No active sprint found. Please create a sprint first.');
       setSprint(null);
@@ -74,8 +79,26 @@ export default function ForecastPage() {
   };
 
   const getMedianVelocity = () => {
-    // TODO: Calculate from history
-    return sprint?.forecastVelocity ? (sprint.forecastVelocity / sprint.totalDaysAvailable).toFixed(2) : '0';
+    const completedSprints = historicalSprints.filter(
+      s => s.actualVelocity !== null && s.totalDaysAvailable > 0
+    );
+    
+    if (completedSprints.length === 0) {
+      return 'N/A';
+    }
+    
+    const velocitiesPerDay = completedSprints.map(
+      s => (s.actualVelocity as number) / s.totalDaysAvailable
+    );
+    
+    const sorted = velocitiesPerDay.sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    
+    const median = sorted.length % 2 === 0
+      ? (sorted[mid - 1] + sorted[mid]) / 2
+      : sorted[mid];
+    
+    return median.toFixed(2);
   };
 
   if (loading) {

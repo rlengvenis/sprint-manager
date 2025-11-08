@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
-import type { Team } from '../types';
+import type { Team, Sprint } from '../types';
 import { calculateTotalDaysAvailable, calculateForecastVelocity } from '../utils/calculations';
 
 interface MemberAvailabilityInput {
@@ -11,6 +11,7 @@ interface MemberAvailabilityInput {
 export default function SprintPlanningPage() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [historicalSprints, setHistoricalSprints] = useState<Sprint[]>([]);
   const [sprintName, setSprintName] = useState('');
   const [bankHolidays, setBankHolidays] = useState<number | "">(0);
   const [comment, setComment] = useState('');
@@ -40,7 +41,7 @@ export default function SprintPlanningPage() {
     }
   };
 
-  const selectTeam = (team: Team) => {
+  const selectTeam = async (team: Team) => {
     setSelectedTeam(team);
     // Initialize member availability with 0 days off for each member
     setMemberAvailability(
@@ -49,6 +50,14 @@ export default function SprintPlanningPage() {
         daysOff: 0,
       }))
     );
+    
+    // Fetch historical sprints for this team
+    try {
+      const history = await api.sprints.getHistory(team.id);
+      setHistoricalSprints(history);
+    } catch {
+      setHistoricalSprints([]);
+    }
   };
 
   const updateMemberDaysOff = (memberId: string, daysOff: number | "") => {
@@ -60,7 +69,7 @@ export default function SprintPlanningPage() {
   };
 
   const calculateForecast = () => {
-    if (!selectedTeam) return { totalDays: 0, forecastVelocity: 0 };
+    if (!selectedTeam) return { totalDays: 0, forecastVelocity: 0, hasHistoricalData: false };
 
     const totalDays = calculateTotalDaysAvailable(
       selectedTeam,
@@ -71,10 +80,12 @@ export default function SprintPlanningPage() {
       }))
     );
 
-    // For now, use simple calculation (no historical data yet)
-    const forecastVelocity = calculateForecastVelocity(totalDays, []);
+    // Use historical sprints if available
+    const forecastVelocity = calculateForecastVelocity(totalDays, historicalSprints);
+    const completedSprints = historicalSprints.filter(s => s.actualVelocity !== null && s.actualVelocity > 0);
+    const hasHistoricalData = completedSprints.length > 0;
 
-    return { totalDays, forecastVelocity };
+    return { totalDays, forecastVelocity, hasHistoricalData };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -105,6 +116,16 @@ export default function SprintPlanningPage() {
 
       await api.sprints.create(sprintData);
       setSuccess(`Sprint "${sprintName}" created successfully!`);
+
+      // Refresh historical data
+      if (selectedTeam) {
+        try {
+          const history = await api.sprints.getHistory(selectedTeam.id);
+          setHistoricalSprints(history);
+        } catch {
+          // Ignore error, historical data is not critical
+        }
+      }
 
       // Clear form
       setSprintName('');
@@ -299,7 +320,13 @@ export default function SprintPlanningPage() {
                 <span className="text-lg font-bold">{forecast.forecastVelocity.toFixed(1)} story points</span>
               </div>
               <div className="text-sm text-blue-700 mt-2">
-                * Forecast assumes 1 story point per day (no historical data yet)
+                {forecast.hasHistoricalData ? (
+                  <>
+                    * Forecast based on median velocity from {historicalSprints.filter(s => s.actualVelocity !== null && s.actualVelocity > 0).length} completed sprint(s)
+                  </>
+                ) : (
+                  <>* Forecast assumes 1 story point per day (no historical data yet)</>
+                )}
               </div>
             </div>
           </div>
