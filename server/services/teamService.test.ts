@@ -21,19 +21,19 @@ describe('TeamService', () => {
     members: [
       {
         id: 'member-1',
-        firstName: 'Alice',
+        name: 'Alice',
         velocityWeight: 1.0,
         teamId: 'team-1'
       },
       {
         id: 'member-2',
-        firstName: 'Bob',
+        name: 'Bob',
         velocityWeight: 0.9,
         teamId: 'team-1'
       },
       {
         id: 'member-3',
-        firstName: 'Charlie',
+        name: 'Charlie',
         velocityWeight: 1.1,
         teamId: 'team-1'
       }
@@ -58,9 +58,9 @@ describe('TeamService', () => {
 
       const team = await teamService.createTeam(teamData);
 
-      expect(team.members[0].firstName).toBe('Alice');
+      expect(team.members[0].name).toBe('Alice');
       expect(team.members[0].velocityWeight).toBe(1.0);
-      expect(team.members[1].firstName).toBe('Bob');
+      expect(team.members[1].name).toBe('Bob');
       expect(team.members[1].velocityWeight).toBe(0.9);
     });
 
@@ -90,7 +90,7 @@ describe('TeamService', () => {
         members: [
           {
             id: 'solo-member',
-            firstName: 'Solo',
+            name: 'Solo',
             velocityWeight: 1.0,
             teamId: 'team-1'
           }
@@ -100,7 +100,7 @@ describe('TeamService', () => {
       const team = await teamService.createTeam(teamData);
 
       expect(team.members).toHaveLength(1);
-      expect(team.members[0].firstName).toBe('Solo');
+      expect(team.members[0].name).toBe('Solo');
     });
 
     it('should create team with no members', async () => {
@@ -136,9 +136,9 @@ describe('TeamService', () => {
       const team = await teamService.getTeam();
 
       expect(team.members).toHaveLength(3);
-      expect(team.members[0].firstName).toBe('Alice');
-      expect(team.members[1].firstName).toBe('Bob');
-      expect(team.members[2].firstName).toBe('Charlie');
+      expect(team.members[0].name).toBe('Alice');
+      expect(team.members[1].name).toBe('Bob');
+      expect(team.members[2].name).toBe('Charlie');
     });
   });
 
@@ -195,7 +195,7 @@ describe('TeamService', () => {
       const newMembers = [
         {
           id: 'new-member-1',
-          firstName: 'David',
+          name: 'David',
           velocityWeight: 1.2,
           teamId: 'team-1'
         }
@@ -204,7 +204,7 @@ describe('TeamService', () => {
       const updatedTeam = await teamService.updateTeam({ members: newMembers });
 
       expect(updatedTeam.members).toHaveLength(1);
-      expect(updatedTeam.members[0].firstName).toBe('David');
+      expect(updatedTeam.members[0].name).toBe('David');
       expect(updatedTeam.members[0].velocityWeight).toBe(1.2);
     });
 
@@ -218,7 +218,7 @@ describe('TeamService', () => {
         members: [
           {
             id: 'updated-member',
-            firstName: 'Eve',
+            name: 'Eve',
             velocityWeight: 0.95,
             teamId: 'team-1'
           }
@@ -228,7 +228,7 @@ describe('TeamService', () => {
       expect(updatedTeam.name).toBe('New Team Name');
       expect(updatedTeam.sprintSizeInDays).toBe(7);
       expect(updatedTeam.members).toHaveLength(1);
-      expect(updatedTeam.members[0].firstName).toBe('Eve');
+      expect(updatedTeam.members[0].name).toBe('Eve');
     });
 
     it('should throw error when team does not exist', async () => {
@@ -252,7 +252,7 @@ describe('TeamService', () => {
         members: [
           {
             id: 'initial-member',
-            firstName: 'Initial',
+            name: 'Initial',
             velocityWeight: 1.0,
             teamId: 'team-1'
           }
@@ -263,13 +263,13 @@ describe('TeamService', () => {
       const newMembers = [
         {
           id: 'initial-member',
-          firstName: 'Initial',
+          name: 'Initial',
           velocityWeight: 1.0,
           teamId: 'team-1'
         },
         {
           id: 'added-member',
-          firstName: 'Added',
+          name: 'Added',
           velocityWeight: 0.9,
           teamId: 'team-1'
         }
@@ -278,7 +278,7 @@ describe('TeamService', () => {
       const updatedTeam = await teamService.updateTeam({ members: newMembers });
 
       expect(updatedTeam.members).toHaveLength(2);
-      expect(updatedTeam.members[1].firstName).toBe('Added');
+      expect(updatedTeam.members[1].name).toBe('Added');
     });
 
     it('should handle updating member velocity weights', async () => {
@@ -288,13 +288,13 @@ describe('TeamService', () => {
       const updatedMembers = [
         {
           id: 'member-1',
-          firstName: 'Alice',
+          name: 'Alice',
           velocityWeight: 1.5, // Changed from 1.0
           teamId: 'team-1'
         },
         {
           id: 'member-2',
-          firstName: 'Bob',
+          name: 'Bob',
           velocityWeight: 0.5, // Changed from 0.9
           teamId: 'team-1'
         }
@@ -340,13 +340,13 @@ describe('TeamService', () => {
         members: [
           {
             id: 'low-velocity',
-            firstName: 'Low',
+            name: 'Low',
             velocityWeight: 0.1,
             teamId: 'team-1'
           },
           {
             id: 'high-velocity',
-            firstName: 'High',
+            name: 'High',
             velocityWeight: 2.0,
             teamId: 'team-1'
           }

@@ -6,7 +6,7 @@ import { LoadingScreen } from '../components/LoadingScreen';
 
 interface MemberForm {
   id?: string;
-  firstName: string;
+  name: string;
   velocityWeight: number | "";
 }
 
@@ -31,9 +31,9 @@ export default function SettingsPage() {
       setTeam(teamData);
       setTeamName(teamData.name);
       setSprintSize(teamData.sprintSizeInDays);
-      setMembers(teamData.members.map((m: { id: string; firstName: string; velocityWeight: number }) => ({
+      setMembers(teamData.members.map((m: { id: string; name: string; velocityWeight: number }) => ({
         id: m.id,
-        firstName: m.firstName,
+        name: m.name,
         velocityWeight: m.velocityWeight
       })));
     } catch (err) {
@@ -46,7 +46,7 @@ export default function SettingsPage() {
   };
 
   const addMember = () => {
-    setMembers([...members, { firstName: '', velocityWeight: 1.0 }]);
+    setMembers([...members, { name: '', velocityWeight: 1.0 }]);
   };
 
   const removeMember = (index: number) => {
@@ -76,11 +76,11 @@ export default function SettingsPage() {
         sprintSizeInDays: sprintSize,
         members: members.map(m => {
           if (typeof m.velocityWeight !== 'number' || m.velocityWeight <= 0) {
-            throw new Error(`Velocity weight for ${m.firstName} must be a valid positive number`);
+            throw new Error(`Velocity weight for ${m.name} must be a valid positive number`);
           }
           return {
             id: m.id || crypto.randomUUID(),
-            firstName: m.firstName,
+            name: m.name,
             velocityWeight: m.velocityWeight,
             teamId: team?.id || '', // Will be set by backend for new teams
           };
@@ -111,7 +111,7 @@ export default function SettingsPage() {
       setSprintSize(team.sprintSizeInDays);
       setMembers(team.members.map(m => ({
         id: m.id,
-        firstName: m.firstName,
+        name: m.name,
         velocityWeight: m.velocityWeight
       })));
     } else {
@@ -223,8 +223,8 @@ export default function SettingsPage() {
                         </label>
                         <input
                           type="text"
-                          value={member.firstName}
-                          onChange={(e) => updateMember(index, 'firstName', e.target.value)}
+                          value={member.name}
+                          onChange={(e) => updateMember(index, 'name', e.target.value)}
                           required
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                           placeholder="John"

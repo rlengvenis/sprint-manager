@@ -2,7 +2,7 @@ import { Document, Types } from 'mongoose';
 
 export interface TeamMember {
   _id?: Types.ObjectId;
-  firstName: string;
+  name: string;
   velocityWeight: number;
 }
 
@@ -19,7 +19,7 @@ export interface MemberAvailability {
   _id?: Types.ObjectId;
   memberId: string;
   daysOff: number;
-  firstName?: string;
+  name?: string;
   velocityWeight?: number;
 }
 

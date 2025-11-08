@@ -1,6 +1,6 @@
 export interface TeamMember {
   id: string;
-  firstName: string;
+  name: string;
   velocityWeight: number; // Individual velocity multiplier (e.g., 0.8 for 80% capacity)
   teamId: string;
 }
@@ -16,7 +16,7 @@ export interface Team {
 export interface MemberAvailability {
   memberId: string;
   daysOff: number;
-  firstName?: string;
+  name?: string;
   velocityWeight?: number;
 }
 

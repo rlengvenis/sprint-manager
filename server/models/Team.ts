@@ -2,7 +2,7 @@ import mongoose, { Schema, Model } from 'mongoose';
 import type { Team as TeamType, TeamMember } from '../types/index.js';
 
 const teamMemberSchema = new Schema<TeamMember>({
-  firstName: {
+  name: {
     type: String,
     required: true,
     trim: true,

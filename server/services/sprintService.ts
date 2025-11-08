@@ -43,7 +43,7 @@ export async function getSprintHistory(): Promise<any[]> {
       return {
         memberId: avail.memberId,
         daysOff: avail.daysOff,
-        firstName: member?.firstName || 'Unknown',
+        name: member?.name || 'Unknown',
         velocityWeight: member?.velocityWeight || 1.0
       };
     });
