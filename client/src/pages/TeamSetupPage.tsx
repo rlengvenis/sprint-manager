@@ -4,12 +4,12 @@ import { api } from '../services/api';
 interface MemberForm {
   firstName: string;
   lastName: string;
-  velocityWeight: number;
+  velocityWeight: number | "";
 }
 
 export default function TeamSetupPage() {
   const [teamName, setTeamName] = useState('');
-  const [sprintSize, setSprintSize] = useState(10);
+  const [sprintSize, setSprintSize] = useState<number | "">(10);
   const [isDefault, setIsDefault] = useState(false);
   const [members, setMembers] = useState<MemberForm[]>([]);
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ export default function TeamSetupPage() {
     setMembers(members.filter((_, i) => i !== index));
   };
 
-  const updateMember = (index: number, field: keyof MemberForm, value: string | number) => {
+  const updateMember = (index: number, field: keyof MemberForm, value: string | number | "") => {
     const updated = [...members];
     updated[index] = { ...updated[index], [field]: value };
     setMembers(updated);
@@ -41,7 +41,10 @@ export default function TeamSetupPage() {
         name: teamName,
         sprintSizeInDays: sprintSize,
         isDefault,
-        members,
+        members: members.map(m => ({
+          ...m,
+          velocityWeight: m.velocityWeight
+        })),
       };
 
       const result = await api.teams.create(teamData);
@@ -112,14 +115,14 @@ export default function TeamSetupPage() {
 
               <div>
                 <label htmlFor="sprintSize" className="block text-sm font-medium text-gray-700 mb-1">
-                  Sprint Size (days)
+                  Sprint Size (days) ddd
                 </label>
                 <input
                   type="number"
                   id="sprintSize"
-                  value={sprintSize}
-                  onChange={(e) => setSprintSize(Number(e.target.value))}
                   required
+                  value={sprintSize}
+                  onChange={(e) => setSprintSize(e.target.value === "" ? "" : Number(e.target.value))}
                   min="1"
                   max="30"
                   className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -214,8 +217,7 @@ export default function TeamSetupPage() {
                         <input
                           type="number"
                           value={member.velocityWeight}
-                          onChange={(e) => updateMember(index, 'velocityWeight', Number(e.target.value))}
-                          required
+                          onChange={(e) => updateMember(index, 'velocityWeight', e.target.value === "" ? "" : Number(e.target.value))}
                           min="0"
                           max="2"
                           step="0.1"
