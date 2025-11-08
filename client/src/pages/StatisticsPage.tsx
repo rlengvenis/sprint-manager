@@ -335,7 +335,7 @@ export default function StatisticsPage() {
           {hasActiveSprint && (
             <button 
               onClick={() => window.location.href = '/'}
-              className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Back to Active Sprint
             </button>
