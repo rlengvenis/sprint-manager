@@ -51,11 +51,11 @@ export default function ActiveSprintPage() {
       setLoading(true);
       setError(null);
       await api.sprints.complete(sprint.id, parseFloat(actualVelocity));
-      setSuccess('Sprint completed successfully! Reloading...');
+      setSuccess('Sprint completed successfully! Redirecting to statistics...');
       
-      // Reload page to update navigation and show empty state
+      // Redirect to statistics page
       setTimeout(() => {
-        window.location.reload();
+        window.location.href = '/statistics';
       }, 1500);
     } catch {
       setError('Failed to complete sprint');
