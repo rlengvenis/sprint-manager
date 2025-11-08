@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import AddSprintPage from './pages/AddSprintPage';
 import SettingsPage from './pages/SettingsPage';
@@ -31,6 +31,12 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               <div className="flex space-x-8">
+                <Link 
+                  to="/" 
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
+                >
+                  🎯 Active Sprint
+                </Link>
                 {!hasActiveSprint && (
                   <Link 
                     to="/add-sprint" 
@@ -39,12 +45,6 @@ function App() {
                     ➕ Add Sprint
                   </Link>
                 )}
-                <Link 
-                  to="/" 
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
-                >
-                  🎯 Active Sprint
-                </Link>
                 <Link 
                   to="/history" 
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
@@ -69,6 +69,7 @@ function App() {
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/forecast" element={<ActiveSprintPage />} />
           <Route path="/history" element={<HistoryPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </Router>
