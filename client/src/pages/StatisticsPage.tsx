@@ -67,7 +67,6 @@ export default function StatisticsPage() {
         averageAccuracy: 0,
         medianVelocity: 0,
         totalSprints: 0,
-        avgSprintLength: 0,
       };
     }
 
@@ -78,13 +77,10 @@ export default function StatisticsPage() {
     const sortedVelocities = [...velocitiesPerDay].sort((a, b) => a - b);
     const medianVelocity = sortedVelocities[Math.floor(sortedVelocities.length / 2)];
 
-    const avgSprintLength = sprints.reduce((sum, s) => sum + s.totalDaysAvailable, 0) / sprints.length;
-
     return {
       averageAccuracy,
       medianVelocity,
       totalSprints: sprints.length,
-      avgSprintLength,
     };
   };
 
@@ -164,7 +160,7 @@ export default function StatisticsPage() {
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-6">Summary Statistics</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Average Accuracy */}
             <div className="bg-blue-50 rounded-lg p-6 text-center border border-blue-100">
               <div className="text-2xl mb-2">📊</div>
@@ -191,16 +187,6 @@ export default function StatisticsPage() {
               <div className="text-3xl font-bold text-purple-600">
                 {stats.totalSprints}
               </div>
-            </div>
-
-            {/* Avg Sprint Length */}
-            <div className="bg-orange-50 rounded-lg p-6 text-center border border-orange-100">
-              <div className="text-2xl mb-2">⏱️</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Avg Sprint Length</div>
-              <div className="text-3xl font-bold text-orange-600">
-                {stats.avgSprintLength.toFixed(1)}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">days</div>
             </div>
           </div>
         </div>
