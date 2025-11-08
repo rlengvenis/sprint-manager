@@ -36,8 +36,8 @@ export default function SprintPlanningPage() {
     try {
       const defaultTeam = await api.teams.getDefault();
       await api.sprints.getCurrent(defaultTeam.id);
-      // If we get here, there's an active sprint - redirect to forecast
-      window.location.href = '/forecast';
+      // If we get here, there's an active sprint - redirect to active sprint page
+      window.location.href = '/';
     } catch {
       // No active sprint, allow access to planning page
       setCheckingActiveSprint(false);
@@ -133,11 +133,11 @@ export default function SprintPlanningPage() {
       };
 
       await api.sprints.create(sprintData);
-      setSuccess(`Sprint "${sprintName}" created successfully! Redirecting to forecast...`);
+      setSuccess(`Sprint "${sprintName}" created successfully! Redirecting...`);
 
-      // Redirect to forecast page after brief delay to show success message
+      // Redirect to active sprint page after brief delay to show success message
       setTimeout(() => {
-        window.location.href = '/forecast';
+        window.location.href = '/';
       }, 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create sprint');

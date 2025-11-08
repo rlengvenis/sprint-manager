@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import SprintPlanningPage from './pages/SprintPlanningPage';
 import TeamSetupPage from './pages/TeamSetupPage';
-import ForecastPage from './pages/ForecastPage';
+import ActiveSprintPage from './pages/ActiveSprintPage';
 import HistoryPage from './pages/HistoryPage';
 import { api } from './services/api';
 
@@ -33,9 +33,9 @@ function App() {
               <div className="flex space-x-8">
                 <Link 
                   to="/" 
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-900 hover:text-blue-600 transition"
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
                 >
-                  🏠 Home
+                  🎯 Active Sprint
                 </Link>
                 <Link 
                   to="/team-setup" 
@@ -52,12 +52,6 @@ function App() {
                   </Link>
                 )}
                 <Link 
-                  to="/forecast" 
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
-                >
-                  🎯 Forecast
-                </Link>
-                <Link 
                   to="/history" 
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
                 >
@@ -70,10 +64,10 @@ function App() {
 
         {/* Routes */}
         <Routes>
-          <Route path="/" element={<ForecastPage />} />
+          <Route path="/" element={<ActiveSprintPage />} />
           <Route path="/team-setup" element={<TeamSetupPage />} />
           <Route path="/planning" element={<SprintPlanningPage />} />
-          <Route path="/forecast" element={<ForecastPage />} />
+          <Route path="/forecast" element={<ActiveSprintPage />} />
           <Route path="/history" element={<HistoryPage />} />
         </Routes>
       </div>

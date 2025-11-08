@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import type { Sprint, Team } from '../types';
 
-export default function ForecastPage() {
+export default function ActiveSprintPage() {
   const [sprint, setSprint] = useState<Sprint | null>(null);
   const [team, setTeam] = useState<Team | null>(null);
   const [historicalSprints, setHistoricalSprints] = useState<Sprint[]>([]);
@@ -31,7 +31,7 @@ export default function ForecastPage() {
       // Load historical sprints
       const history = await api.sprints.getHistory(defaultTeam.id);
       setHistoricalSprints(history);
-    } catch (err) {
+    } catch {
       setError('No active sprint found. Please create a sprint first.');
       setSprint(null);
     } finally {
@@ -57,7 +57,7 @@ export default function ForecastPage() {
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-    } catch (err) {
+    } catch {
       setError('Failed to complete sprint');
     } finally {
       setLoading(false);
@@ -115,12 +115,12 @@ export default function ForecastPage() {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint Forecast</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Active Sprint</h1>
           
           <div className="bg-white rounded-lg shadow p-12 text-center">
             <div className="text-6xl mb-4">🎯</div>
             <h2 className="text-2xl font-semibold text-gray-800 mb-2">No Active Sprint</h2>
-            <p className="text-gray-600 mb-6">There is no active sprint to display forecast for.</p>
+            <p className="text-gray-600 mb-6">There is no active sprint to display.</p>
             <button 
               onClick={() => window.location.href = '/planning'}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -136,7 +136,7 @@ export default function ForecastPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint Forecast</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Active Sprint</h1>
 
         {/* Success Message */}
         {success && (
