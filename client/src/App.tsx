@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import AddSprintPage from './pages/AddSprintPage';
 import SettingsPage from './pages/SettingsPage';
 import ActiveSprintPage from './pages/ActiveSprintPage';
-import HistoryPage from './pages/HistoryPage';
+import StatisticsPage from './pages/StatisticsPage';
 import { api } from './services/api';
 
 function App() {
@@ -46,10 +46,10 @@ function App() {
                   </Link>
                 )}
                 <Link 
-                  to="/history" 
+                  to="/statistics" 
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
                 >
-                  📊 History
+                  📊 Statistics
                 </Link>
                 <Link 
                   to="/settings" 
@@ -68,7 +68,7 @@ function App() {
           <Route path="/add-sprint" element={<AddSprintPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/forecast" element={<ActiveSprintPage />} />
-          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

@@ -276,10 +276,10 @@ export default function ActiveSprintPage() {
         {/* Navigation Buttons */}
         <div className="flex justify-center gap-4 mt-8">
           <button 
-            onClick={() => window.location.href = '/history'}
+            onClick={() => window.location.href = '/statistics'}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
           >
-            View History
+            View Statistics
           </button>
         </div>
       </div>

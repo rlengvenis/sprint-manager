@@ -3,7 +3,7 @@ import { api } from '../services/api';
 import type { Sprint, Team } from '../types';
 import { calculateAccuracy } from '../utils/calculations';
 
-export default function HistoryPage() {
+export default function StatisticsPage() {
   const [sprints, setSprints] = useState<Sprint[]>([]);
   const [team, setTeam] = useState<Team | null>(null);
   const [expandedSprintId, setExpandedSprintId] = useState<string | null>(null);
@@ -27,7 +27,7 @@ export default function HistoryPage() {
       const completedSprints = await api.sprints.getHistory(defaultTeam.id);
       setSprints(completedSprints);
     } catch (err) {
-      setError('Failed to load sprint history. Please make sure you have a default team set.');
+      setError('Failed to load sprint statistics. Please make sure you have a default team set.');
       setSprints([]);
     } finally {
       setLoading(false);
@@ -108,7 +108,7 @@ export default function HistoryPage() {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint History</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint Statistics</h1>
           
           <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
             {error}
@@ -122,12 +122,12 @@ export default function HistoryPage() {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint History</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint Statistics</h1>
           
           <div className="bg-white rounded-lg shadow p-12 text-center">
             <div className="text-6xl mb-4">📊</div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">No Sprint History Yet</h2>
-            <p className="text-gray-600 mb-6">Complete your first sprint to see history data.</p>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-2">No Sprint Statistics Yet</h2>
+            <p className="text-gray-600 mb-6">Complete your first sprint to see statistics.</p>
             <button 
               onClick={() => window.location.href = '/add-sprint'}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -145,7 +145,7 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint History</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint Statistics</h1>
 
         {/* Team Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-purple-500">
@@ -153,6 +153,51 @@ export default function HistoryPage() {
             <div>
               <h2 className="text-xl font-semibold text-gray-800">Team: {team.name}</h2>
               <p className="text-gray-600">Completed Sprints: {sprints.length}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Summary Statistics */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-6">Summary Statistics</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Average Accuracy */}
+            <div className="bg-blue-50 rounded-lg p-6 text-center border border-blue-100">
+              <div className="text-2xl mb-2">📊</div>
+              <div className="text-sm font-medium text-gray-600 mb-2">Average Accuracy</div>
+              <div className="text-3xl font-bold text-blue-600">
+                {stats.averageAccuracy.toFixed(1)}%
+              </div>
+            </div>
+
+            {/* Median Velocity */}
+            <div className="bg-green-50 rounded-lg p-6 text-center border border-green-100">
+              <div className="text-2xl mb-2">🎯</div>
+              <div className="text-sm font-medium text-gray-600 mb-2">Median Velocity</div>
+              <div className="text-3xl font-bold text-green-600">
+                {stats.medianVelocity.toFixed(2)}
+              </div>
+              <div className="text-sm text-gray-500 mt-1">points/day</div>
+            </div>
+
+            {/* Total Sprints */}
+            <div className="bg-purple-50 rounded-lg p-6 text-center border border-purple-100">
+              <div className="text-2xl mb-2">📈</div>
+              <div className="text-sm font-medium text-gray-600 mb-2">Total Sprints</div>
+              <div className="text-3xl font-bold text-purple-600">
+                {stats.totalSprints}
+              </div>
+            </div>
+
+            {/* Avg Sprint Length */}
+            <div className="bg-orange-50 rounded-lg p-6 text-center border border-orange-100">
+              <div className="text-2xl mb-2">⏱️</div>
+              <div className="text-sm font-medium text-gray-600 mb-2">Avg Sprint Length</div>
+              <div className="text-3xl font-bold text-orange-600">
+                {stats.avgSprintLength.toFixed(1)}
+              </div>
+              <div className="text-sm text-gray-500 mt-1">days</div>
             </div>
           </div>
         </div>
@@ -270,51 +315,6 @@ export default function HistoryPage() {
                 })}
               </tbody>
             </table>
-          </div>
-        </div>
-
-        {/* Summary Statistics */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-6">Summary Statistics</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Average Accuracy */}
-            <div className="bg-blue-50 rounded-lg p-6 text-center border border-blue-100">
-              <div className="text-2xl mb-2">📊</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Average Accuracy</div>
-              <div className="text-3xl font-bold text-blue-600">
-                {stats.averageAccuracy.toFixed(1)}%
-              </div>
-            </div>
-
-            {/* Median Velocity */}
-            <div className="bg-green-50 rounded-lg p-6 text-center border border-green-100">
-              <div className="text-2xl mb-2">🎯</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Median Velocity</div>
-              <div className="text-3xl font-bold text-green-600">
-                {stats.medianVelocity.toFixed(2)}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">points/day</div>
-            </div>
-
-            {/* Total Sprints */}
-            <div className="bg-purple-50 rounded-lg p-6 text-center border border-purple-100">
-              <div className="text-2xl mb-2">📈</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Total Sprints</div>
-              <div className="text-3xl font-bold text-purple-600">
-                {stats.totalSprints}
-              </div>
-            </div>
-
-            {/* Avg Sprint Length */}
-            <div className="bg-orange-50 rounded-lg p-6 text-center border border-orange-100">
-              <div className="text-2xl mb-2">⏱️</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Avg Sprint Length</div>
-              <div className="text-3xl font-bold text-orange-600">
-                {stats.avgSprintLength.toFixed(1)}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">days</div>
-            </div>
           </div>
         </div>
 
