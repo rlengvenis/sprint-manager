@@ -6,7 +6,7 @@ import {
   calculateHistoricalMedianVelocity, 
   calculateMemberDaysAvailable,
   calculateSummaryStats 
-} from '../utils/calculations';
+} from '../utils/sprintMetrics';
 
 export default function StatisticsPage() {
   const [sprints, setSprints] = useState<Sprint[]>([]);

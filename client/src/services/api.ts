@@ -1,12 +1,19 @@
+import type { Team, Sprint } from '../types';
+
 const API_BASE_URL = 'http://localhost:5001/api';
 
+type TeamInput = Omit<Team, 'id' | 'createdAt'>;
+type SprintInput = Omit<Sprint, 'id' | 'createdAt' | 'completedAt'> & { 
+  completedAt?: Date | null;
+};
+
 // Transform MongoDB _id to id for consistency
-function normalizeIds(obj: any): any {
+function normalizeIds<T>(obj: T): T {
   if (Array.isArray(obj)) {
-    return obj.map(normalizeIds);
+    return obj.map(normalizeIds) as T;
   }
   if (obj && typeof obj === 'object') {
-    const normalized: any = {};
+    const normalized: Record<string, unknown> = {};
     for (const key in obj) {
       if (key === '_id') {
         normalized.id = obj[key];
@@ -16,7 +23,7 @@ function normalizeIds(obj: any): any {
         normalized[key] = obj[key];
       }
     }
-    return normalized;
+    return normalized as T;
   }
   return obj;
 }
@@ -44,11 +51,11 @@ export const api = {
   // Team endpoints (single team only)
   teams: {
     get: () => fetchAPI('/teams'),
-    create: (data: any) => fetchAPI('/teams', {
+    create: (data: TeamInput) => fetchAPI('/teams', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-    update: (data: any) => fetchAPI('/teams', {
+    update: (data: TeamInput) => fetchAPI('/teams', {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
@@ -60,7 +67,7 @@ export const api = {
     getById: (id: string) => fetchAPI(`/sprints/${id}`),
     getCurrent: () => fetchAPI('/sprints/current'),
     getHistory: () => fetchAPI('/sprints/history'),
-    create: (data: any) => fetchAPI('/sprints', {
+    create: (data: SprintInput) => fetchAPI('/sprints', {
       method: 'POST',
       body: JSON.stringify(data),
     }),

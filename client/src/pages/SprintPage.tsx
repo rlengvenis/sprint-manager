@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import type { Sprint, Team } from '../types';
-import { calculateTotalDaysAvailable, calculateForecastVelocity } from '../utils/calculations';
+import { calculateTotalDaysAvailable, calculateForecastVelocity } from '../utils/sprintMetrics';
 
 interface MemberAvailabilityInput {
   memberId: string;

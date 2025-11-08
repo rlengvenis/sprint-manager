@@ -1,17 +1,4 @@
-// Local type definitions to avoid import issues
-interface TeamMember {
-  id: string;
-  firstName: string;
-  lastName: string;
-  velocityWeight: number;
-}
-
-interface Team {
-  id: string;
-  name: string;
-  sprintSizeInDays: number;
-  members: TeamMember[];
-}
+import type { Team, Sprint, MemberAvailability } from '../types';
 
 interface MemberAvailabilityInput {
   memberId: string;
@@ -21,29 +8,6 @@ interface MemberAvailabilityInput {
 interface SprintData {
   actualVelocity: number | null;
   totalDaysAvailable: number;
-}
-
-interface MemberAvailability {
-  memberId: string;
-  daysOff: number;
-  firstName?: string;
-  lastName?: string;
-  velocityWeight?: number;
-}
-
-interface Sprint {
-  id: string;
-  name: string;
-  teamId: string;
-  memberAvailability: MemberAvailability[];
-  comment: string;
-  totalDaysAvailable: number;
-  forecastVelocity: number;
-  actualVelocity: number | null;
-  createdAt: Date;
-  completedAt: Date | null;
-  sprintSizeInDays?: number;
-  teamName?: string;
 }
 
 /**

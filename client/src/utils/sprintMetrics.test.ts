@@ -7,7 +7,7 @@ import {
   calculateHistoricalMedianVelocity,
   calculateMemberDaysAvailable,
   calculateSummaryStats,
-} from './calculations';
+} from './sprintMetrics';
 
 describe('calculateTotalDaysAvailable', () => {
   it('should calculate total days for a team with multiple members', () => {

@@ -66,15 +66,26 @@ export default function SettingsPage() {
     setSuccess(null);
 
     try {
+      // Validate and convert form data
+      if (typeof sprintSize !== 'number' || sprintSize <= 0) {
+        throw new Error('Sprint size must be a valid positive number');
+      }
+
       const teamData = {
         name: teamName,
         sprintSizeInDays: sprintSize,
-        members: members.map(m => ({
-          id: m.id,
-          firstName: m.firstName,
-          lastName: m.lastName,
-          velocityWeight: m.velocityWeight
-        })),
+        members: members.map(m => {
+          if (typeof m.velocityWeight !== 'number' || m.velocityWeight <= 0) {
+            throw new Error(`Velocity weight for ${m.firstName} ${m.lastName} must be a valid positive number`);
+          }
+          return {
+            id: m.id || crypto.randomUUID(),
+            firstName: m.firstName,
+            lastName: m.lastName,
+            velocityWeight: m.velocityWeight,
+            teamId: team?.id || '', // Will be set by backend for new teams
+          };
+        }),
       };
 
       if (team) {
