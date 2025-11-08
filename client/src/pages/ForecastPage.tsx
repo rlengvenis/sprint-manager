@@ -255,7 +255,6 @@ export default function ForecastPage() {
               </label>
               <input
                 type="number"
-                step="0.01"
                 value={actualVelocity}
                 onChange={(e) => setActualVelocity(e.target.value)}
                 className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
