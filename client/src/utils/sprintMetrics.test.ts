@@ -7,6 +7,8 @@ import {
   calculateHistoricalMedianVelocity,
   calculateMemberDaysAvailable,
   calculateSummaryStats,
+  getMedianVelocityPerDay,
+  calculateMemberWeightedDays,
 } from './sprintMetrics';
 
 describe('calculateTotalDaysAvailable', () => {
@@ -525,8 +527,8 @@ describe('calculateSummaryStats', () => {
 
     const result = calculateSummaryStats(sprints);
 
-    // Velocities per day: 10, 10, 20, 30 -> sorted -> median at index 2 = 20
-    expect(result.medianVelocity).toBe(20);
+    // Velocities per day: 10, 10, 20, 30 -> sorted -> median = (10 + 20) / 2 = 15
+    expect(result.medianVelocity).toBe(15);
   });
 
   it('should handle single sprint', () => {
@@ -582,8 +584,160 @@ describe('calculateSummaryStats', () => {
 
     const result = calculateSummaryStats(sprints);
 
-    // Velocities per day: [20, 10] -> sorted -> median at index 1 = 20
-    expect(result.medianVelocity).toBe(20);
+    // Velocities per day: [20, 10] -> sorted [10, 20] -> median = (10 + 20) / 2 = 15
+    expect(result.medianVelocity).toBe(15);
+  });
+});
+
+describe('getMedianVelocityPerDay', () => {
+  it('should return formatted median velocity per day', () => {
+    const sprints = [
+      {
+        id: '1',
+        name: 'Sprint 1',
+        teamId: 'team1',
+        memberAvailability: [],
+        comment: '',
+        forecastVelocity: 100,
+        actualVelocity: 100,
+        totalDaysAvailable: 10,
+        createdAt: new Date('2024-01-01'),
+        completedAt: new Date('2024-01-10'),
+      },
+      {
+        id: '2',
+        name: 'Sprint 2',
+        teamId: 'team1',
+        memberAvailability: [],
+        comment: '',
+        forecastVelocity: 100,
+        actualVelocity: 200,
+        totalDaysAvailable: 10,
+        createdAt: new Date('2024-01-15'),
+        completedAt: new Date('2024-01-25'),
+      },
+    ];
+
+    const result = getMedianVelocityPerDay(sprints);
+    // Velocities per day: [10, 20] -> median = 15
+    expect(result).toBe('15.00');
+  });
+
+  it('should return N/A when no historical data', () => {
+    const result = getMedianVelocityPerDay([]);
+    expect(result).toBe('N/A');
+  });
+
+  it('should filter out null velocities', () => {
+    const sprints = [
+      {
+        id: '1',
+        name: 'Sprint 1',
+        teamId: 'team1',
+        memberAvailability: [],
+        comment: '',
+        forecastVelocity: 100,
+        actualVelocity: null,
+        totalDaysAvailable: 10,
+        createdAt: new Date('2024-01-01'),
+        completedAt: new Date('2024-01-10'),
+      },
+      {
+        id: '2',
+        name: 'Sprint 2',
+        teamId: 'team1',
+        memberAvailability: [],
+        comment: '',
+        forecastVelocity: 100,
+        actualVelocity: 150,
+        totalDaysAvailable: 10,
+        createdAt: new Date('2024-01-15'),
+        completedAt: new Date('2024-01-25'),
+      },
+    ];
+
+    const result = getMedianVelocityPerDay(sprints);
+    expect(result).toBe('15.00');
+  });
+
+  it('should handle single sprint', () => {
+    const sprints = [
+      {
+        id: '1',
+        name: 'Sprint 1',
+        teamId: 'team1',
+        memberAvailability: [],
+        comment: '',
+        forecastVelocity: 100,
+        actualVelocity: 125,
+        totalDaysAvailable: 10,
+        createdAt: new Date('2024-01-01'),
+        completedAt: new Date('2024-01-10'),
+      },
+    ];
+
+    const result = getMedianVelocityPerDay(sprints);
+    expect(result).toBe('12.50');
+  });
+
+  it('should format to 2 decimal places', () => {
+    const sprints = [
+      {
+        id: '1',
+        name: 'Sprint 1',
+        teamId: 'team1',
+        memberAvailability: [],
+        comment: '',
+        forecastVelocity: 100,
+        actualVelocity: 100,
+        totalDaysAvailable: 3,
+        createdAt: new Date('2024-01-01'),
+        completedAt: new Date('2024-01-03'),
+      },
+    ];
+
+    const result = getMedianVelocityPerDay(sprints);
+    // 100 / 3 = 33.333... -> formatted as 33.33
+    expect(result).toBe('33.33');
+  });
+});
+
+describe('calculateMemberWeightedDays', () => {
+  it('should calculate weighted days with full availability', () => {
+    const result = calculateMemberWeightedDays(10, 0, 1.0);
+    expect(result).toBe(10);
+  });
+
+  it('should apply velocity weight', () => {
+    const result = calculateMemberWeightedDays(10, 0, 0.8);
+    expect(result).toBe(8);
+  });
+
+  it('should account for days off', () => {
+    const result = calculateMemberWeightedDays(10, 3, 1.0);
+    expect(result).toBe(7);
+  });
+
+  it('should apply both days off and velocity weight', () => {
+    const result = calculateMemberWeightedDays(10, 2, 0.8);
+    // (10 - 2) * 0.8 = 6.4
+    expect(result).toBe(6.4);
+  });
+
+  it('should handle zero days off', () => {
+    const result = calculateMemberWeightedDays(10, 0, 0.5);
+    expect(result).toBe(5);
+  });
+
+  it('should handle velocity weight greater than 1', () => {
+    const result = calculateMemberWeightedDays(10, 2, 1.2);
+    // (10 - 2) * 1.2 = 9.6
+    expect(result).toBe(9.6);
+  });
+
+  it('should handle all days off', () => {
+    const result = calculateMemberWeightedDays(10, 10, 1.0);
+    expect(result).toBe(0);
   });
 });
 

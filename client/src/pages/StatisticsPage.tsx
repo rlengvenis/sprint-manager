@@ -289,22 +289,12 @@ export default function StatisticsPage() {
 
         {/* Navigation Buttons */}
         <div className="flex justify-center gap-4 mt-8">
-          {hasActiveSprint && (
-            <button 
-              onClick={() => window.location.href = '/'}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
-            >
-              Back to Active Sprint
-            </button>
-          )}
-          {!hasActiveSprint && (
-            <button 
-              onClick={() => window.location.href = '/'}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
-            >
-              Add New Sprint
-            </button>
-          )}
+          <button 
+            onClick={() => window.location.href = '/'}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            {hasActiveSprint ? 'Back to Active Sprint' : 'Add New Sprint'}
+          </button>
         </div>
       </div>
     </div>

@@ -1,12 +1,21 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import type { Sprint, Team } from '../types';
-import { calculateTotalDaysAvailable, calculateForecastVelocity } from '../utils/sprintMetrics';
+import { 
+  calculateTotalDaysAvailable, 
+  calculateForecastVelocity,
+  getMedianVelocityPerDay,
+  calculateMemberWeightedDays
+} from '../utils/sprintMetrics';
+import { MetricCard } from '../components/MetricCard';
 
 interface MemberAvailabilityInput {
   memberId: string;
-  daysOff: number | "";
+  daysOff: number;
 }
+
+const normalizeMemberAvailability = (availability: MemberAvailabilityInput[]) => 
+  availability.map(ma => ({ ...ma, daysOff: ma.daysOff }));
 
 export default function SprintPage() {
   const [sprint, setSprint] = useState<Sprint | null>(null);
@@ -94,35 +103,15 @@ export default function SprintPage() {
     
     if (!member || !availability) return 0;
     
-    const workDays = team.sprintSizeInDays - availability.daysOff;
-    return workDays * member.velocityWeight;
-  };
-
-  const getMedianVelocity = () => {
-    const completedSprints = historicalSprints.filter(
-      s => s.actualVelocity !== null && s.totalDaysAvailable > 0
+    return calculateMemberWeightedDays(
+      team.sprintSizeInDays,
+      availability.daysOff,
+      member.velocityWeight
     );
-    
-    if (completedSprints.length === 0) {
-      return 'N/A';
-    }
-    
-    const velocitiesPerDay = completedSprints.map(
-      s => (s.actualVelocity as number) / s.totalDaysAvailable
-    );
-    
-    const sorted = velocitiesPerDay.sort((a, b) => a - b);
-    const mid = Math.floor(sorted.length / 2);
-    
-    const median = sorted.length % 2 === 0
-      ? (sorted[mid - 1] + sorted[mid]) / 2
-      : sorted[mid];
-    
-    return median.toFixed(2);
   };
 
   // Add Sprint functions
-  const updateMemberDaysOff = (memberId: string, daysOff: number | "") => {
+  const updateMemberDaysOff = (memberId: string, daysOff: number) => {
     setMemberAvailability(prev =>
       prev.map(ma =>
         ma.memberId === memberId ? { ...ma, daysOff } : ma
@@ -133,14 +122,7 @@ export default function SprintPage() {
   const calculateForecast = () => {
     if (!team) return { totalDays: 0, forecastVelocity: 0, hasHistoricalData: false };
 
-    const totalDays = calculateTotalDaysAvailable(
-      team,
-      memberAvailability.map(ma => ({
-        ...ma,
-        daysOff: typeof ma.daysOff === "number" ? ma.daysOff : Number(ma.daysOff) || 0
-      }))
-    );
-
+    const totalDays = calculateTotalDaysAvailable(team, normalizeMemberAvailability(memberAvailability));
     const forecastVelocity = calculateForecastVelocity(totalDays, historicalSprints);
     const completedSprints = historicalSprints.filter(s => s.actualVelocity !== null && s.actualVelocity > 0);
     const hasHistoricalData = completedSprints.length > 0;
@@ -162,10 +144,7 @@ export default function SprintPage() {
       const sprintData = {
         name: sprintName,
         teamId: team.id,
-        memberAvailability: memberAvailability.map(ma => ({
-          ...ma,
-          daysOff: typeof ma.daysOff === "number" ? ma.daysOff : Number(ma.daysOff) || 0
-        })),
+        memberAvailability: normalizeMemberAvailability(memberAvailability),
         comment,
         totalDaysAvailable: totalDays,
         forecastVelocity,
@@ -305,13 +284,9 @@ export default function SprintPage() {
                         <label className="text-sm text-gray-700">Days Off:</label>
                         <input
                           type="number"
-                          value={availability?.daysOff === "" ? "" : (availability?.daysOff || 0)}
-                          onChange={(e) => updateMemberDaysOff(member.id, e.target.value === "" ? "" : Number(e.target.value))}
-                          onBlur={(e) => {
-                            if (e.target.value === "" || Number(e.target.value) < 0) {
-                              updateMemberDaysOff(member.id, 0);
-                            }
-                          }}
+                          value={availability?.daysOff || 0}
+                          onChange={(e) => updateMemberDaysOff(member.id, Number(e.target.value) || 0)}
+                          required
                           min="0"
                           max={team.sprintSizeInDays}
                           className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
@@ -419,35 +394,27 @@ export default function SprintPage() {
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Sprint Forecast</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Total Days Available */}
-            <div className="bg-blue-50 rounded-lg p-6 text-center border border-blue-100">
-              <div className="text-2xl mb-2">📊</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Total Days Available</div>
-              <div className="text-3xl font-bold text-blue-600">
-                {sprint.totalDaysAvailable.toFixed(1)}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">days</div>
-            </div>
-
-            {/* Forecast Velocity */}
-            <div className="bg-green-50 rounded-lg p-6 text-center border border-green-100">
-              <div className="text-2xl mb-2">🎯</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Forecast Velocity</div>
-              <div className="text-3xl font-bold text-green-600">
-                {sprint.forecastVelocity.toFixed(2)}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">story points</div>
-            </div>
-
-            {/* Historical Median Velocity */}
-            <div className="bg-purple-50 rounded-lg p-6 text-center border border-purple-100">
-              <div className="text-2xl mb-2">📈</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Historical Median</div>
-              <div className="text-3xl font-bold text-purple-600">
-                {getMedianVelocity()}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">points/day</div>
-            </div>
+            <MetricCard
+              icon="📊"
+              label="Total Days Available"
+              value={sprint.totalDaysAvailable.toFixed(1)}
+              unit="days"
+              colorClass="blue"
+            />
+            <MetricCard
+              icon="🎯"
+              label="Forecast Velocity"
+              value={sprint.forecastVelocity.toFixed(2)}
+              unit="story points"
+              colorClass="green"
+            />
+            <MetricCard
+              icon="📈"
+              label="Historical Median"
+              value={getMedianVelocityPerDay(historicalSprints)}
+              unit="points/day"
+              colorClass="purple"
+            />
           </div>
         </div>
 
