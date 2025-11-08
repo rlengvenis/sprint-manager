@@ -13,7 +13,6 @@ export default function AddSprintPage() {
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [historicalSprints, setHistoricalSprints] = useState<Sprint[]>([]);
   const [sprintName, setSprintName] = useState('');
-  const [bankHolidays, setBankHolidays] = useState<number | "">(0);
   const [comment, setComment] = useState('');
   const [memberAvailability, setMemberAvailability] = useState<MemberAvailabilityInput[]>([]);
   const [loading, setLoading] = useState(false);
@@ -91,7 +90,6 @@ export default function AddSprintPage() {
 
     const totalDays = calculateTotalDaysAvailable(
       selectedTeam,
-      typeof bankHolidays === "number" ? bankHolidays : Number(bankHolidays) || 0,
       memberAvailability.map(ma => ({
         ...ma,
         daysOff: typeof ma.daysOff === "number" ? ma.daysOff : Number(ma.daysOff) || 0
@@ -120,7 +118,6 @@ export default function AddSprintPage() {
       const sprintData = {
         name: sprintName,
         teamId: selectedTeam.id,
-        bankHolidays: typeof bankHolidays === "number" ? bankHolidays : Number(bankHolidays) || 0,
         memberAvailability: memberAvailability.map(ma => ({
           ...ma,
           daysOff: typeof ma.daysOff === "number" ? ma.daysOff : Number(ma.daysOff) || 0
@@ -148,7 +145,6 @@ export default function AddSprintPage() {
 
   const handleCancel = () => {
     setSprintName('');
-    setBankHolidays(0);
     setComment('');
     if (selectedTeam) {
       setMemberAvailability(
@@ -251,26 +247,6 @@ export default function AddSprintPage() {
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Sprint 23 - Q4 2025"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="bankHolidays" className="block text-sm font-medium text-gray-700 mb-1">
-                  Bank Holidays (days that affect entire team)
-                </label>
-                <input
-                  type="number"
-                  id="bankHolidays"
-                  value={bankHolidays === "" ? "" : bankHolidays}
-                  onChange={(e) => setBankHolidays(e.target.value === "" ? "" : Number(e.target.value))}
-                  onBlur={(e) => {
-                    if (e.target.value === "" || Number(e.target.value) < 0) {
-                      setBankHolidays(0);
-                    }
-                  }}
-                  min="0"
-                  max={selectedTeam.sprintSizeInDays}
-                  className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>

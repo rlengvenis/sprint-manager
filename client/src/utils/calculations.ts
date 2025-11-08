@@ -25,11 +25,10 @@ interface SprintData {
 
 /**
  * Calculate total days available for a sprint
- * Formula: Sum((sprintSize - memberDaysOff - bankHolidays) × velocityWeight)
+ * Formula: Sum((sprintSize - memberDaysOff) × velocityWeight)
  */
 export function calculateTotalDaysAvailable(
   team: Team,
-  bankHolidays: number,
   memberAvailability: MemberAvailabilityInput[]
 ): number {
   const sprintSize = team.sprintSizeInDays;
@@ -38,7 +37,7 @@ export function calculateTotalDaysAvailable(
     const availability = memberAvailability.find(a => a.memberId === member.id);
     const daysOff = availability?.daysOff || 0;
     
-    const availableDays = sprintSize - daysOff - bankHolidays;
+    const availableDays = sprintSize - daysOff;
     const weightedDays = availableDays * member.velocityWeight;
     
     return total + weightedDays;

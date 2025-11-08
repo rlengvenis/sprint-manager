@@ -24,12 +24,6 @@ const sprintSchema = new mongoose.Schema({
     ref: 'Team',
     required: true,
   },
-  bankHolidays: {
-    type: Number,
-    required: true,
-    min: 0,
-    default: 0,
-  },
   memberAvailability: [memberAvailabilitySchema],
   comment: {
     type: String,

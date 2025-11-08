@@ -72,7 +72,7 @@ export default function ActiveSprintPage() {
     
     if (!member || !availability) return 0;
     
-    const workDays = team.sprintSizeInDays - sprint.bankHolidays - availability.daysOff;
+    const workDays = team.sprintSizeInDays - availability.daysOff;
     return workDays * member.velocityWeight;
   };
 
@@ -200,10 +200,6 @@ export default function ActiveSprintPage() {
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Sprint Details</h3>
           
           <div className="space-y-3">
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Bank Holidays:</span>
-              <span className="font-medium text-gray-800">{sprint.bankHolidays} days</span>
-            </div>
             <div className="flex justify-between py-2 border-b">
               <span className="text-gray-600">Team Members:</span>
               <span className="font-medium text-gray-800">{team?.members.length} members</span>

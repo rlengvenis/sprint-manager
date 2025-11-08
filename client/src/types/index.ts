@@ -24,7 +24,6 @@ export interface Sprint {
   id: string;
   name: string;
   teamId: string;
-  bankHolidays: number;
   memberAvailability: MemberAvailability[];
   comment: string;
   totalDaysAvailable: number;

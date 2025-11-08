@@ -68,7 +68,7 @@ export default function StatisticsPage() {
     
     if (!member || !availability) return 0;
     
-    const workDays = team.sprintSizeInDays - sprint.bankHolidays - availability.daysOff;
+    const workDays = team.sprintSizeInDays - availability.daysOff;
     return workDays * member.velocityWeight;
   };
 
@@ -272,10 +272,6 @@ export default function StatisticsPage() {
                               <h4 className="font-semibold text-gray-800 mb-3">Sprint Details</h4>
                               
                               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                                <div>
-                                  <span className="text-gray-600">Bank Holidays:</span>
-                                  <span className="ml-2 font-medium text-gray-800">{sprint.bankHolidays} days</span>
-                                </div>
                                 <div>
                                   <span className="text-gray-600">Team Members:</span>
                                   <span className="ml-2 font-medium text-gray-800">{sprint.memberAvailability.length}</span>
