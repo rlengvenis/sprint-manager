@@ -15,8 +15,7 @@ function App() {
 
   const checkActiveSprint = async () => {
     try {
-      const defaultTeam = await api.teams.getDefault();
-      await api.sprints.getCurrent(defaultTeam.id);
+      await api.sprints.getCurrent();
       setHasActiveSprint(true);
     } catch {
       setHasActiveSprint(false);

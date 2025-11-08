@@ -33,23 +33,8 @@ const teamSchema = new mongoose.Schema({
     max: 30,
   },
   members: [teamMemberSchema],
-  isDefault: {
-    type: Boolean,
-    default: false,
-  },
 }, {
   timestamps: true,
-});
-
-// Ensure only one default team exists
-teamSchema.pre('save', async function(next) {
-  if (this.isDefault) {
-    await mongoose.model('Team').updateMany(
-      { _id: { $ne: this._id } },
-      { isDefault: false }
-    );
-  }
-  next();
 });
 
 const Team = mongoose.model('Team', teamSchema);

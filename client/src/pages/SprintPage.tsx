@@ -11,7 +11,6 @@ interface MemberAvailabilityInput {
 export default function SprintPage() {
   const [sprint, setSprint] = useState<Sprint | null>(null);
   const [team, setTeam] = useState<Team | null>(null);
-  const [teams, setTeams] = useState<Team[]>([]);
   const [historicalSprints, setHistoricalSprints] = useState<Sprint[]>([]);
   const [actualVelocity, setActualVelocity] = useState('');
   const [loading, setLoading] = useState(true);
@@ -32,23 +31,19 @@ export default function SprintPage() {
       setLoading(true);
       setError(null);
       
-      // First get default team
-      const defaultTeam = await api.teams.getDefault();
-      setTeam(defaultTeam);
-      
-      // Load all teams for the add sprint form
-      const teamsData = await api.teams.getAll();
-      setTeams(teamsData);
+      // Get the team (there's only one)
+      const teamData = await api.teams.get();
+      setTeam(teamData);
       
       try {
         // Try to get current sprint
-        const currentSprint = await api.sprints.getCurrent(defaultTeam.id);
+        const currentSprint = await api.sprints.getCurrent();
         setSprint(currentSprint);
       } catch {
         // No active sprint - initialize add sprint form
         setSprint(null);
         setMemberAvailability(
-          defaultTeam.members.map(m => ({
+          teamData.members.map((m: { id: string }) => ({
             memberId: m.id,
             daysOff: 0,
           }))
@@ -56,7 +51,7 @@ export default function SprintPage() {
       }
       
       // Load historical sprints
-      const history = await api.sprints.getHistory(defaultTeam.id);
+      const history = await api.sprints.getHistory();
       setHistoricalSprints(history);
     } catch {
       setError('Failed to load team data.');
@@ -127,24 +122,6 @@ export default function SprintPage() {
   };
 
   // Add Sprint functions
-  const selectTeam = async (selectedTeam: Team) => {
-    setTeam(selectedTeam);
-    setMemberAvailability(
-      selectedTeam.members.map(m => ({
-        memberId: m.id,
-        daysOff: 0,
-      }))
-    );
-    
-    // Fetch historical sprints for this team
-    try {
-      const history = await api.sprints.getHistory(selectedTeam.id);
-      setHistoricalSprints(history);
-    } catch {
-      setHistoricalSprints([]);
-    }
-  };
-
   const updateMemberDaysOff = (memberId: string, daysOff: number | "") => {
     setMemberAvailability(prev =>
       prev.map(ma =>
@@ -256,29 +233,11 @@ export default function SprintPage() {
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Add Sprint</h1>
 
-          {/* Team Selection */}
-          <div className="bg-white rounded-lg shadow p-4 mb-6 flex justify-between items-center">
-            <div>
-              <div className="text-sm text-gray-600">Team:</div>
-              <div className="text-lg font-semibold text-gray-900">{team.name}</div>
-              <div className="text-sm text-gray-600">Sprint Size: {team.sprintSizeInDays} days</div>
-            </div>
-            {teams.length > 1 && (
-              <select
-                value={team.id}
-                onChange={(e) => {
-                  const selectedTeam = teams.find(t => t.id === e.target.value);
-                  if (selectedTeam) selectTeam(selectedTeam);
-                }}
-                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {teams.map(t => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
-            )}
+          {/* Team Info */}
+          <div className="bg-white rounded-lg shadow p-4 mb-6">
+            <div className="text-sm text-gray-600">Team:</div>
+            <div className="text-lg font-semibold text-gray-900">{team.name}</div>
+            <div className="text-sm text-gray-600">Sprint Size: {team.sprintSizeInDays} days</div>
           </div>
 
           {/* Success Message */}

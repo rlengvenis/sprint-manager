@@ -18,8 +18,7 @@ export default function StatisticsPage() {
 
   const checkActiveSprint = async () => {
     try {
-      const defaultTeam = await api.teams.getDefault();
-      await api.sprints.getCurrent(defaultTeam.id);
+      await api.sprints.getCurrent();
       setHasActiveSprint(true);
     } catch {
       setHasActiveSprint(false);
@@ -31,15 +30,15 @@ export default function StatisticsPage() {
       setLoading(true);
       setError(null);
       
-      // First get default team
-      const defaultTeam = await api.teams.getDefault();
-      setTeam(defaultTeam);
+      // Get the team (there's only one)
+      const teamData = await api.teams.get();
+      setTeam(teamData);
       
-      // Then get completed sprints for that team
-      const completedSprints = await api.sprints.getHistory(defaultTeam.id);
+      // Get completed sprints
+      const completedSprints = await api.sprints.getHistory();
       setSprints(completedSprints);
     } catch (err) {
-      setError('Failed to load sprint statistics. Please make sure you have a default team set.');
+      setError('Failed to load sprint statistics. Please make sure you have a team set up.');
       setSprints([]);
     } finally {
       setLoading(false);

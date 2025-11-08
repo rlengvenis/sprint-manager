@@ -11,7 +11,6 @@ export interface Team {
   name: string;
   sprintSizeInDays: number;
   members: TeamMember[];
-  isDefault: boolean;
   createdAt: Date;
 }
 

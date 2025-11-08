@@ -31,6 +31,10 @@ export function calculateTotalDaysAvailable(
   team: Team,
   memberAvailability: MemberAvailabilityInput[]
 ): number {
+  if (!team || !team.members || team.members.length === 0) {
+    return 0;
+  }
+  
   const sprintSize = team.sprintSizeInDays;
   
   return team.members.reduce((total, member) => {

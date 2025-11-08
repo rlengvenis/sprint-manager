@@ -41,33 +41,25 @@ async function fetchAPI(endpoint: string, options?: RequestInit) {
 export const api = {
   health: () => fetchAPI('/health'),
   
-  // Team endpoints
+  // Team endpoints (single team only)
   teams: {
-    getAll: () => fetchAPI('/teams'),
-    getById: (id: string) => fetchAPI(`/teams/${id}`),
-    getDefault: () => fetchAPI('/teams/default'),
+    get: () => fetchAPI('/teams'),
     create: (data: any) => fetchAPI('/teams', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-    update: (id: string, data: any) => fetchAPI(`/teams/${id}`, {
+    update: (data: any) => fetchAPI('/teams', {
       method: 'PUT',
       body: JSON.stringify(data),
-    }),
-    setDefault: (id: string) => fetchAPI(`/teams/${id}/default`, {
-      method: 'PATCH',
     }),
   },
 
   // Sprint endpoints
   sprints: {
-    getAll: (teamId?: string) => {
-      const query = teamId ? `?teamId=${teamId}` : '';
-      return fetchAPI(`/sprints${query}`);
-    },
+    getAll: () => fetchAPI('/sprints'),
     getById: (id: string) => fetchAPI(`/sprints/${id}`),
-    getCurrent: (teamId: string) => fetchAPI(`/sprints/current?teamId=${teamId}`),
-    getHistory: (teamId: string) => fetchAPI(`/sprints/history?teamId=${teamId}`),
+    getCurrent: () => fetchAPI('/sprints/current'),
+    getHistory: () => fetchAPI('/sprints/history'),
     create: (data: any) => fetchAPI('/sprints', {
       method: 'POST',
       body: JSON.stringify(data),

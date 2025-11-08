@@ -3,29 +3,11 @@ import Sprint from '../models/Sprint.js';
 
 const router = express.Router();
 
-// GET /api/sprints - list sprints (with optional teamId filter)
-router.get('/', async (req, res) => {
-  try {
-    const { teamId } = req.query;
-    const filter = teamId ? { teamId } : {};
-    
-    const sprints = await Sprint.find(filter).sort({ createdAt: -1 });
-    res.json(sprints);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // GET /api/sprints/current - get current sprint (latest without actualVelocity)
+// NOTE: Must be before /:id route to avoid matching "current" as an ID
 router.get('/current', async (req, res) => {
   try {
-    const { teamId } = req.query;
-    if (!teamId) {
-      return res.status(400).json({ error: 'teamId is required' });
-    }
-
     const sprint = await Sprint.findOne({
-      teamId,
       actualVelocity: null
     }).sort({ createdAt: -1 });
 
@@ -40,18 +22,23 @@ router.get('/current', async (req, res) => {
 });
 
 // GET /api/sprints/history - get completed sprints
+// NOTE: Must be before /:id route to avoid matching "history" as an ID
 router.get('/history', async (req, res) => {
   try {
-    const { teamId } = req.query;
-    if (!teamId) {
-      return res.status(400).json({ error: 'teamId is required' });
-    }
-
     const sprints = await Sprint.find({
-      teamId,
       actualVelocity: { $ne: null }
     }).sort({ completedAt: -1 });
 
+    res.json(sprints);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/sprints - list all sprints
+router.get('/', async (req, res) => {
+  try {
+    const sprints = await Sprint.find().sort({ createdAt: -1 });
     res.json(sprints);
   } catch (error) {
     res.status(500).json({ error: error.message });
