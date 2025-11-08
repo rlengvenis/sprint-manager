@@ -141,7 +141,7 @@ export default function StatisticsPage() {
             <h2 className="text-2xl font-semibold text-gray-800 mb-2">No Sprint Statistics Yet</h2>
             <p className="text-gray-600 mb-6">Complete your first sprint to see statistics.</p>
             <button 
-              onClick={() => window.location.href = '/add-sprint'}
+              onClick={() => window.location.href = '/'}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Create New Sprint
@@ -338,7 +338,7 @@ export default function StatisticsPage() {
           )}
           {!hasActiveSprint && (
             <button 
-              onClick={() => window.location.href = '/add-sprint'}
+              onClick={() => window.location.href = '/'}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Add New Sprint
