@@ -107,8 +107,8 @@ alwaysApply: true
 ## Feature 3: Sprint Forecast Display (1-2 hours)
 
 ### 3.1 Backend API
-- [ ] GET `/api/sprints/:id` - get sprint details
-- [ ] Ensure forecast data is returned correctly
+- [x] GET `/api/sprints/:id` - get sprint details
+- [x] Ensure forecast data is returned correctly
 
 ### 3.2 Frontend UI
 - [ ] Create `client/src/pages/ForecastPage.tsx`
