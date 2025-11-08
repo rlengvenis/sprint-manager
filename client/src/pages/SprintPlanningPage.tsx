@@ -5,14 +5,14 @@ import { calculateTotalDaysAvailable, calculateForecastVelocity } from '../utils
 
 interface MemberAvailabilityInput {
   memberId: string;
-  daysOff: number;
+  daysOff: number | "";
 }
 
 export default function SprintPlanningPage() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [sprintName, setSprintName] = useState('');
-  const [bankHolidays, setBankHolidays] = useState(0);
+  const [bankHolidays, setBankHolidays] = useState<number | "">(0);
   const [comment, setComment] = useState('');
   const [memberAvailability, setMemberAvailability] = useState<MemberAvailabilityInput[]>([]);
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ export default function SprintPlanningPage() {
     );
   };
 
-  const updateMemberDaysOff = (memberId: string, daysOff: number) => {
+  const updateMemberDaysOff = (memberId: string, daysOff: number | "") => {
     setMemberAvailability(prev =>
       prev.map(ma =>
         ma.memberId === memberId ? { ...ma, daysOff } : ma
@@ -64,8 +64,11 @@ export default function SprintPlanningPage() {
 
     const totalDays = calculateTotalDaysAvailable(
       selectedTeam,
-      bankHolidays,
-      memberAvailability
+      typeof bankHolidays === "number" ? bankHolidays : Number(bankHolidays) || 0,
+      memberAvailability.map(ma => ({
+        ...ma,
+        daysOff: typeof ma.daysOff === "number" ? ma.daysOff : Number(ma.daysOff) || 0
+      }))
     );
 
     // For now, use simple calculation (no historical data yet)
@@ -88,8 +91,11 @@ export default function SprintPlanningPage() {
       const sprintData = {
         name: sprintName,
         teamId: selectedTeam.id,
-        bankHolidays,
-        memberAvailability,
+        bankHolidays: typeof bankHolidays === "number" ? bankHolidays : Number(bankHolidays) || 0,
+        memberAvailability: memberAvailability.map(ma => ({
+          ...ma,
+          daysOff: typeof ma.daysOff === "number" ? ma.daysOff : Number(ma.daysOff) || 0
+        })),
         comment,
         totalDaysAvailable: totalDays,
         forecastVelocity,
@@ -218,8 +224,13 @@ export default function SprintPlanningPage() {
                 <input
                   type="number"
                   id="bankHolidays"
-                  value={bankHolidays}
-                  onChange={(e) => setBankHolidays(Number(e.target.value))}
+                  value={bankHolidays === "" ? "" : bankHolidays}
+                  onChange={(e) => setBankHolidays(e.target.value === "" ? "" : Number(e.target.value))}
+                  onBlur={(e) => {
+                    if (e.target.value === "" || Number(e.target.value) < 0) {
+                      setBankHolidays(0);
+                    }
+                  }}
                   min="0"
                   max={selectedTeam.sprintSizeInDays}
                   className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -254,8 +265,13 @@ export default function SprintPlanningPage() {
                       <label className="text-sm text-gray-700">Days Off:</label>
                       <input
                         type="number"
-                        value={availability?.daysOff || 0}
-                        onChange={(e) => updateMemberDaysOff(member.id, Number(e.target.value))}
+                        value={availability?.daysOff === "" ? "" : (availability?.daysOff || 0)}
+                        onChange={(e) => updateMemberDaysOff(member.id, e.target.value === "" ? "" : Number(e.target.value))}
+                        onBlur={(e) => {
+                          if (e.target.value === "" || Number(e.target.value) < 0) {
+                            updateMemberDaysOff(member.id, 0);
+                          }
+                        }}
                         min="0"
                         max={selectedTeam.sprintSizeInDays}
                         className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"

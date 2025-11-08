@@ -115,7 +115,7 @@ export default function TeamSetupPage() {
 
               <div>
                 <label htmlFor="sprintSize" className="block text-sm font-medium text-gray-700 mb-1">
-                  Sprint Size (days) ddd
+                  Sprint Size (days)
                 </label>
                 <input
                   type="number"
