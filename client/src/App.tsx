@@ -1,7 +1,7 @@
-import TeamSetupPage from './pages/TeamSetupPage'
+import SprintPlanningPage from './pages/SprintPlanningPage'
 
 function App() {
-  return <TeamSetupPage />
+  return <SprintPlanningPage />
 }
 
 export default App

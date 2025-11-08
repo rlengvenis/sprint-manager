@@ -68,37 +68,39 @@ alwaysApply: true
 ## Feature 2: Sprint Planning (2-3 hours)
 
 ### 2.1 TypeScript Types
-- [ ] Add Sprint, MemberAvailability interfaces to `types/index.ts`
+- [x] Add Sprint, MemberAvailability interfaces to `types/index.ts`
 
 ### 2.2 Calculation Utilities
-- [ ] Create `client/src/utils/calculations.ts`
-- [ ] Implement `calculateTotalDaysAvailable()`
-- [ ] Implement `calculateMedianVelocity()`
-- [ ] Implement `calculateForecastVelocity()`
-- [ ] Add unit tests or manual verification
+- [x] Create `client/src/utils/calculations.ts`
+- [x] Implement `calculateTotalDaysAvailable()`
+- [x] Implement `calculateMedianVelocity()`
+- [x] Implement `calculateForecastVelocity()`
+- [x] Implement `calculateAccuracy()`
 
 ### 2.3 Backend API
-- [ ] Create Sprint model in `server/models/Sprint.js`
-- [ ] Create `server/routes/sprints.js`
-- [ ] POST `/api/sprints` - create sprint with calculations
-- [ ] GET `/api/sprints?teamId=X` - list sprints for team
-- [ ] GET `/api/sprints/current?teamId=X` - get current sprint
-- [ ] Test endpoints
+- [x] Create Sprint model in `server/models/Sprint.js`
+- [x] Create `server/routes/sprints.js`
+- [x] POST `/api/sprints` - create sprint with calculations
+- [x] GET `/api/sprints?teamId=X` - list sprints for team
+- [x] GET `/api/sprints/current?teamId=X` - get current sprint
+- [x] GET `/api/sprints/history?teamId=X` - get completed sprints
+- [x] PATCH `/api/sprints/:id/complete` - add actual velocity
+- [x] Test endpoints
 
 ### 2.4 Frontend UI
-- [ ] Create `client/src/pages/SprintPlanningPage.tsx`
-- [ ] Add form: sprint name, bank holidays
-- [ ] Display team members with days off inputs
-- [ ] Add comment textarea
-- [ ] Show calculated forecast before submission
-- [ ] Style form with TailwindCSS
+- [x] Create `client/src/pages/SprintPlanningPage.tsx`
+- [x] Add form: sprint name, bank holidays
+- [x] Display team members with days off inputs
+- [x] Add comment textarea
+- [x] Show calculated forecast before submission
+- [x] Style form with TailwindCSS
 
 ### 2.5 Connect UI to API
-- [ ] Add sprint API methods to `api.ts`
-- [ ] Implement sprint creation with calculations
-- [ ] Handle team member availability input
-- [ ] Add validation and error handling
-- [ ] Test: create sprint → verify calculations → save to DB
+- [x] Add sprint API methods to `api.ts`
+- [x] Implement sprint creation with calculations
+- [x] Handle team member availability input
+- [x] Add validation and error handling
+- [x] Test: create sprint → verify calculations → save to DB
 
 ---
 

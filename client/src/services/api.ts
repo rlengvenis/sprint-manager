@@ -32,5 +32,24 @@ export const api = {
       method: 'PATCH',
     }),
   },
+
+  // Sprint endpoints
+  sprints: {
+    getAll: (teamId?: string) => {
+      const query = teamId ? `?teamId=${teamId}` : '';
+      return fetchAPI(`/sprints${query}`);
+    },
+    getById: (id: string) => fetchAPI(`/sprints/${id}`),
+    getCurrent: (teamId: string) => fetchAPI(`/sprints/current?teamId=${teamId}`),
+    getHistory: (teamId: string) => fetchAPI(`/sprints/history?teamId=${teamId}`),
+    create: (data: any) => fetchAPI('/sprints', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+    complete: (id: string, actualVelocity: number) => fetchAPI(`/sprints/${id}/complete`, {
+      method: 'PATCH',
+      body: JSON.stringify({ actualVelocity }),
+    }),
+  },
 };
 
