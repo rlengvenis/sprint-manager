@@ -111,19 +111,24 @@ alwaysApply: true
 - [x] Ensure forecast data is returned correctly
 
 ### 3.2 Frontend UI
-- [ ] Create `client/src/pages/ForecastPage.tsx`
-- [ ] Display current sprint name
-- [ ] Show total days available
-- [ ] Show forecast velocity
-- [ ] Add form to input actual velocity when sprint completes
-- [ ] Style with TailwindCSS cards/layout
+- [x] Create `client/src/pages/ForecastPage.tsx`
+- [x] Display current sprint name
+- [x] Show total days available
+- [x] Show forecast velocity
+- [x] Add form to input actual velocity when sprint completes
+- [x] Style with TailwindCSS cards/layout
 
 ### 3.3 Connect UI to API
-- [ ] Fetch current sprint on page load
-- [ ] PATCH `/api/sprints/:id/complete` - add actual velocity
-- [ ] Update sprint completion in backend
-- [ ] Show success message on completion
-- [ ] Test: view forecast → complete sprint → verify update
+- [x] Fetch current sprint on page load
+- [x] PATCH `/api/sprints/:id/complete` - add actual velocity
+- [x] Update sprint completion in backend
+- [x] Show success message on completion
+- [x] Test: view forecast → complete sprint → verify update
+
+### 3.4 Navigation & Routing
+- [x] Add React Router to App.tsx
+- [x] Create navigation bar with links to all pages
+- [x] Set up routes for Home, Team Setup, Planning, and Forecast pages
 
 ---
 
@@ -154,30 +159,6 @@ alwaysApply: true
 - [ ] Add empty state for no history
 - [ ] Test with multiple completed sprints
 
----
-
-## Feature 5: Navigation & Landing Page (1 hour)
-
-### 5.1 Navigation
-- [ ] Create `client/src/components/Navigation.tsx`
-- [ ] Add links to all pages: Home, Team Setup, Sprint Planning, Forecast, History
-- [ ] Style navbar with TailwindCSS
-- [ ] Add active route highlighting
-
-### 5.2 Landing Page
-- [ ] Create `client/src/pages/LandingPage.tsx`
-- [ ] Display current sprint forecast if exists
-- [ ] Show empty state if no sprint
-- [ ] Add quick action buttons
-- [ ] Style with hero section layout
-
-### 5.3 Routing Setup
-- [ ] Setup React Router in `App.tsx`
-- [ ] Configure all routes
-- [ ] Add Navigation to layout
-- [ ] Test navigation between all pages
-
----
 
 ## Feature 6: Polish & Testing (1-2 hours)
 
@@ -188,14 +169,6 @@ alwaysApply: true
 - [ ] Complete sprints with actuals
 - [ ] Verify median calculation with 3+ sprints
 - [ ] Test edge cases (no data, zero values)
-
-### 6.2 UI/UX Polish
-- [ ] Add loading spinners
-- [ ] Improve error messages
-- [ ] Add success notifications/toasts
-- [ ] Ensure responsive design works on mobile
-- [ ] Add icons from react-icons
-- [ ] Polish form validation
 
 ### 6.3 Code Cleanup
 - [ ] Remove console.logs
