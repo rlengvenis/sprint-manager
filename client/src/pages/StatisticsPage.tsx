@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import type { Sprint } from '../types';
-import { calculateDelta } from '../utils/calculations';
+import { 
+  calculateDelta, 
+  calculateHistoricalMedianVelocity, 
+  calculateMemberDaysAvailable,
+  calculateSummaryStats 
+} from '../utils/calculations';
 
 export default function StatisticsPage() {
   const [sprints, setSprints] = useState<Sprint[]>([]);
@@ -59,54 +64,6 @@ export default function StatisticsPage() {
     return `${sign}${delta.toFixed(2)}`;
   };
 
-  const calculateHistoricalMedianVelocity = (currentSprint: Sprint) => {
-    // Get all sprints completed before this sprint was created
-    const priorSprints = sprints.filter(s => {
-      const completedDate = s.completedAt ? new Date(s.completedAt) : null;
-      const currentCreatedDate = new Date(currentSprint.createdAt);
-      return completedDate && completedDate < currentCreatedDate && s.actualVelocity !== null;
-    });
-
-    if (priorSprints.length === 0) return null;
-
-    // Calculate median velocity per day from prior sprints
-    const velocitiesPerDay = priorSprints.map(s => s.actualVelocity! / s.totalDaysAvailable);
-    const sortedVelocities = [...velocitiesPerDay].sort((a, b) => a - b);
-    const medianVelocityPerDay = sortedVelocities[Math.floor(sortedVelocities.length / 2)];
-    
-    return medianVelocityPerDay;
-  };
-
-  const calculateMemberDaysAvailable = (availability: Sprint['memberAvailability'][0], sprintLength: number) => {
-    if (!availability.velocityWeight) return 0;
-    
-    const workDays = sprintLength - availability.daysOff;
-    return workDays * availability.velocityWeight;
-  };
-
-  const calculateSummaryStats = () => {
-    if (sprints.length === 0) {
-      return {
-        averageDelta: 0,
-        medianVelocity: 0,
-        totalSprints: 0,
-      };
-    }
-
-    const deltas = sprints.map(s => calculateDelta(s.forecastVelocity, s.actualVelocity!));
-    const averageDelta = deltas.reduce((a, b) => a + b, 0) / deltas.length;
-
-    const velocitiesPerDay = sprints.map(s => s.actualVelocity! / s.totalDaysAvailable);
-    const sortedVelocities = [...velocitiesPerDay].sort((a, b) => a - b);
-    const medianVelocity = sortedVelocities[Math.floor(sortedVelocities.length / 2)];
-
-    return {
-      averageDelta,
-      medianVelocity,
-      totalSprints: sprints.length,
-    };
-  };
-
   const formatDate = (date: Date | null) => {
     if (!date) return 'N/A';
     return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
@@ -160,7 +117,7 @@ export default function StatisticsPage() {
     );
   }
 
-  const stats = calculateSummaryStats();
+  const stats = calculateSummaryStats(sprints);
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -237,7 +194,7 @@ export default function StatisticsPage() {
               <tbody className="divide-y divide-gray-200">
                 {sprints.map((sprint) => {
                   const delta = calculateDelta(sprint.forecastVelocity, sprint.actualVelocity!);
-                  const historicalMedian = calculateHistoricalMedianVelocity(sprint);
+                  const historicalMedian = calculateHistoricalMedianVelocity(sprint, sprints);
                   const isExpanded = expandedSprintId === sprint.id;
 
                   return (

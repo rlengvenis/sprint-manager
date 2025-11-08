@@ -23,6 +23,29 @@ interface SprintData {
   totalDaysAvailable: number;
 }
 
+interface MemberAvailability {
+  memberId: string;
+  daysOff: number;
+  firstName?: string;
+  lastName?: string;
+  velocityWeight?: number;
+}
+
+interface Sprint {
+  id: string;
+  name: string;
+  teamId: string;
+  memberAvailability: MemberAvailability[];
+  comment: string;
+  totalDaysAvailable: number;
+  forecastVelocity: number;
+  actualVelocity: number | null;
+  createdAt: Date;
+  completedAt: Date | null;
+  sprintSizeInDays?: number;
+  teamName?: string;
+}
+
 /**
  * Calculate total days available for a sprint
  * Formula: Sum((sprintSize - memberDaysOff) × velocityWeight)
@@ -107,19 +130,6 @@ export function calculateForecastVelocity(
 }
 
 /**
- * Calculate accuracy percentage between forecast and actual
- * Returns the percentage of forecast achieved
- * Example: forecast=100, actual=95 returns 95%
- */
-export function calculateAccuracy(forecast: number, actual: number | null): number {
-  if (actual === null || forecast === 0) {
-    return 0;
-  }
-
-  return (actual / forecast) * 100;
-}
-
-/**
  * Calculate delta (difference) between actual and forecast
  * Returns actual - forecast
  * Example: forecast=100, actual=105 returns +5
@@ -147,5 +157,74 @@ function calculateMedianFromArray(numbers: number[]): number {
   } else {
     return sorted[mid];
   }
+}
+
+/**
+ * Calculate historical median velocity per day at the time a sprint was created
+ * Returns null if no historical data exists (e.g., first sprint)
+ */
+export function calculateHistoricalMedianVelocity(
+  currentSprint: Sprint,
+  allSprints: Sprint[]
+): number | null {
+  // Get all sprints completed before this sprint was created
+  const priorSprints = allSprints.filter(s => {
+    const completedDate = s.completedAt ? new Date(s.completedAt) : null;
+    const currentCreatedDate = new Date(currentSprint.createdAt);
+    return completedDate && completedDate < currentCreatedDate && s.actualVelocity !== null;
+  });
+
+  if (priorSprints.length === 0) return null;
+
+  // Calculate median velocity per day from prior sprints
+  const velocitiesPerDay = priorSprints.map(s => s.actualVelocity! / s.totalDaysAvailable);
+  const sortedVelocities = [...velocitiesPerDay].sort((a, b) => a - b);
+  const medianVelocityPerDay = sortedVelocities[Math.floor(sortedVelocities.length / 2)];
+  
+  return medianVelocityPerDay;
+}
+
+/**
+ * Calculate member days available based on availability and sprint length
+ * Formula: (sprintLength - daysOff) × velocityWeight
+ */
+export function calculateMemberDaysAvailable(
+  availability: MemberAvailability,
+  sprintLength: number
+): number {
+  if (!availability.velocityWeight) return 0;
+  
+  const workDays = sprintLength - availability.daysOff;
+  return workDays * availability.velocityWeight;
+}
+
+/**
+ * Calculate summary statistics from completed sprints
+ */
+export function calculateSummaryStats(sprints: Sprint[]): {
+  averageDelta: number;
+  medianVelocity: number;
+  totalSprints: number;
+} {
+  if (sprints.length === 0) {
+    return {
+      averageDelta: 0,
+      medianVelocity: 0,
+      totalSprints: 0,
+    };
+  }
+
+  const deltas = sprints.map(s => calculateDelta(s.forecastVelocity, s.actualVelocity!));
+  const averageDelta = deltas.reduce((a, b) => a + b, 0) / deltas.length;
+
+  const velocitiesPerDay = sprints.map(s => s.actualVelocity! / s.totalDaysAvailable);
+  const sortedVelocities = [...velocitiesPerDay].sort((a, b) => a - b);
+  const medianVelocity = sortedVelocities[Math.floor(sortedVelocities.length / 2)];
+
+  return {
+    averageDelta,
+    medianVelocity,
+    totalSprints: sprints.length,
+  };
 }
 
