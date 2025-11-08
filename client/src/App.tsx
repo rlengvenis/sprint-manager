@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import SettingsPage from './pages/SettingsPage';
-import ActiveSprintPage from './pages/ActiveSprintPage';
+import SprintPage from './pages/SprintPage';
 import StatisticsPage from './pages/StatisticsPage';
 
 function App() {
@@ -37,7 +37,7 @@ function App() {
 
         {/* Routes */}
         <Routes>
-          <Route path="/" element={<ActiveSprintPage />} />
+          <Route path="/" element={<SprintPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
