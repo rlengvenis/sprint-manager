@@ -9,10 +9,22 @@ export default function StatisticsPage() {
   const [expandedSprintId, setExpandedSprintId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasActiveSprint, setHasActiveSprint] = useState(false);
 
   useEffect(() => {
     loadHistory();
+    checkActiveSprint();
   }, []);
+
+  const checkActiveSprint = async () => {
+    try {
+      const defaultTeam = await api.teams.getDefault();
+      await api.sprints.getCurrent(defaultTeam.id);
+      setHasActiveSprint(true);
+    } catch {
+      setHasActiveSprint(false);
+    }
+  };
 
   const loadHistory = async () => {
     try {
@@ -320,18 +332,22 @@ export default function StatisticsPage() {
 
         {/* Navigation Buttons */}
         <div className="flex justify-center gap-4 mt-8">
-          <button 
-            onClick={() => window.location.href = '/'}
-            className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition"
-          >
-            Back to Active Sprint
-          </button>
-          <button 
-            onClick={() => window.location.href = '/add-sprint'}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Add New Sprint
-          </button>
+          {hasActiveSprint && (
+            <button 
+              onClick={() => window.location.href = '/'}
+              className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition"
+            >
+              Back to Active Sprint
+            </button>
+          )}
+          {!hasActiveSprint && (
+            <button 
+              onClick={() => window.location.href = '/add-sprint'}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Add New Sprint
+            </button>
+          )}
         </div>
       </div>
     </div>
