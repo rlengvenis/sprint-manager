@@ -45,7 +45,7 @@ export default function SprintPlanningPage() {
     // Initialize member availability with 0 days off for each member
     setMemberAvailability(
       team.members.map(m => ({
-        memberId: (m as any)._id || m.id,
+        memberId: m.id,
         daysOff: 0,
       }))
     );
@@ -87,7 +87,7 @@ export default function SprintPlanningPage() {
 
       const sprintData = {
         name: sprintName,
-        teamId: (selectedTeam as any)._id || selectedTeam.id,
+        teamId: selectedTeam.id,
         bankHolidays,
         memberAvailability,
         comment,
@@ -106,7 +106,7 @@ export default function SprintPlanningPage() {
       setComment('');
       if (selectedTeam) {
         setMemberAvailability(
-          selectedTeam.members.map(m => ({ memberId: (m as any)._id || m.id, daysOff: 0 }))
+          selectedTeam.members.map(m => ({ memberId: m.id, daysOff: 0 }))
         );
       }
     } catch (err) {
@@ -122,7 +122,7 @@ export default function SprintPlanningPage() {
     setComment('');
     if (selectedTeam) {
       setMemberAvailability(
-        selectedTeam.members.map(m => ({ memberId: (m as any)._id || m.id, daysOff: 0 }))
+        selectedTeam.members.map(m => ({ memberId: m.id, daysOff: 0 }))
       );
     }
     setError(null);
@@ -158,15 +158,15 @@ export default function SprintPlanningPage() {
           </div>
           {teams.length > 1 && (
             <select
-              value={(selectedTeam as any)._id || selectedTeam.id}
+              value={selectedTeam.id}
               onChange={(e) => {
-                const team = teams.find(t => ((t as any)._id || t.id) === e.target.value);
+                const team = teams.find(t => t.id === e.target.value);
                 if (team) selectTeam(team);
               }}
               className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {teams.map(team => (
-                <option key={(team as any)._id || team.id} value={(team as any)._id || team.id}>
+                <option key={team.id} value={team.id}>
                   {team.name}
                 </option>
               ))}
@@ -236,11 +236,10 @@ export default function SprintPlanningPage() {
 
             <div className="space-y-3">
               {selectedTeam.members.map((member) => {
-                const memberId = (member as any)._id || member.id;
-                const availability = memberAvailability.find(ma => ma.memberId === memberId);
+                const availability = memberAvailability.find(ma => ma.memberId === member.id);
                 return (
                   <div
-                    key={memberId}
+                    key={member.id}
                     className="bg-gray-50 border border-gray-200 rounded-md p-4 flex justify-between items-center"
                   >
                     <div className="flex-1">
@@ -256,7 +255,7 @@ export default function SprintPlanningPage() {
                       <input
                         type="number"
                         value={availability?.daysOff || 0}
-                        onChange={(e) => updateMemberDaysOff(memberId, Number(e.target.value))}
+                        onChange={(e) => updateMemberDaysOff(member.id, Number(e.target.value))}
                         min="0"
                         max={selectedTeam.sprintSizeInDays}
                         className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"

@@ -1,5 +1,26 @@
 const API_BASE_URL = 'http://localhost:5001/api';
 
+// Transform MongoDB _id to id for consistency
+function normalizeIds(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(normalizeIds);
+  }
+  if (obj && typeof obj === 'object') {
+    const normalized: any = {};
+    for (const key in obj) {
+      if (key === '_id') {
+        normalized.id = obj[key];
+      } else if (key === 'members' || key === 'memberAvailability') {
+        normalized[key] = normalizeIds(obj[key]);
+      } else {
+        normalized[key] = obj[key];
+      }
+    }
+    return normalized;
+  }
+  return obj;
+}
+
 async function fetchAPI(endpoint: string, options?: RequestInit) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
@@ -13,7 +34,8 @@ async function fetchAPI(endpoint: string, options?: RequestInit) {
     throw new Error(`API Error: ${response.statusText}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  return normalizeIds(data);
 }
 
 export const api = {
