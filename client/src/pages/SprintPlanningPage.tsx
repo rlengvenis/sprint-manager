@@ -115,27 +115,12 @@ export default function SprintPlanningPage() {
       };
 
       await api.sprints.create(sprintData);
-      setSuccess(`Sprint "${sprintName}" created successfully!`);
+      setSuccess(`Sprint "${sprintName}" created successfully! Redirecting to forecast...`);
 
-      // Refresh historical data
-      if (selectedTeam) {
-        try {
-          const history = await api.sprints.getHistory(selectedTeam.id);
-          setHistoricalSprints(history);
-        } catch {
-          // Ignore error, historical data is not critical
-        }
-      }
-
-      // Clear form
-      setSprintName('');
-      setBankHolidays(0);
-      setComment('');
-      if (selectedTeam) {
-        setMemberAvailability(
-          selectedTeam.members.map(m => ({ memberId: m.id, daysOff: 0 }))
-        );
-      }
+      // Redirect to forecast page after brief delay to show success message
+      setTimeout(() => {
+        window.location.href = '/forecast';
+      }, 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create sprint');
     } finally {
