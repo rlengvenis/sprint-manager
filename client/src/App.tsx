@@ -1,9 +1,30 @@
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import SettingsPage from './pages/SettingsPage';
 import SprintPage from './pages/SprintPage';
 import StatisticsPage from './pages/StatisticsPage';
+import { api } from './services/api';
 
 function App() {
+  const [hasActiveSprint, setHasActiveSprint] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    checkActiveSprint();
+  }, []);
+
+  const checkActiveSprint = async () => {
+    try {
+      const defaultTeam = await api.teams.getDefault();
+      await api.sprints.getCurrent(defaultTeam.id);
+      setHasActiveSprint(true);
+    } catch {
+      setHasActiveSprint(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
@@ -16,7 +37,7 @@ function App() {
                   to="/" 
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
                 >
-                  🎯 Active Sprint
+                  {loading ? '...' : hasActiveSprint ? '🎯 Active Sprint' : '➕ Add Sprint'}
                 </Link>
                 <Link 
                   to="/statistics" 
