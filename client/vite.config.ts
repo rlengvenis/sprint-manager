@@ -13,4 +13,9 @@ export default defineConfig({
       overlay: true,
     },
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: [],
+  },
 })

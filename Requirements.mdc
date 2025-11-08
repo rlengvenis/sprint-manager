@@ -78,14 +78,14 @@ Open history page
   bankHolidays: number    // Days that apply to entire team
   memberAvailability: MemberAvailability[]
   comment: string
-  totalDaysAvailable: number        // Sum of (sprintDuration - memberDaysOff - bankHolidays) * velocityWeight
-  forecastVelocity: number          // Median velocity from past sprints * totalDaysAvailable
+  totalDaysAvailable: number        // Sum of (sprintDuration - memberDaysOff - bankHolidays)
+  forecastVelocity: number          // Median velocity per day * totalDaysAvailable (velocityWeight applied during forecast calculation)
   actualVelocity: number | null  // null until sprint is completed
   createdAt: Date
   completedAt: Date | null
 }
 ```
-Note: Sprint duration is inherited from `Team.sprintSizeInDays`
+Note: Sprint duration is inherited from `Team.sprintSizeInDays`. VelocityWeight affects forecasted story points, not available days.
 
 ### MemberAvailability
 ```typescript

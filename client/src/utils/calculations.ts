@@ -48,7 +48,8 @@ interface Sprint {
 
 /**
  * Calculate total days available for a sprint
- * Formula: Sum((sprintSize - memberDaysOff) × velocityWeight)
+ * Formula: Sum(sprintSize - memberDaysOff)
+ * Note: velocityWeight is NOT applied here - it only affects forecast velocity
  */
 export function calculateTotalDaysAvailable(
   team: Team,
@@ -65,9 +66,8 @@ export function calculateTotalDaysAvailable(
     const daysOff = availability?.daysOff || 0;
     
     const availableDays = sprintSize - daysOff;
-    const weightedDays = availableDays * member.velocityWeight;
     
-    return total + weightedDays;
+    return total + availableDays;
   }, 0);
 }
 
