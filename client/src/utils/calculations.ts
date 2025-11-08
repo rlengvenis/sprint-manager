@@ -120,6 +120,20 @@ export function calculateAccuracy(forecast: number, actual: number | null): numb
 }
 
 /**
+ * Calculate delta (difference) between actual and forecast
+ * Returns actual - forecast
+ * Example: forecast=100, actual=105 returns +5
+ * Example: forecast=100, actual=95 returns -5
+ */
+export function calculateDelta(forecast: number, actual: number | null): number {
+  if (actual === null) {
+    return 0;
+  }
+
+  return actual - forecast;
+}
+
+/**
  * Helper function to calculate median from array of numbers
  */
 function calculateMedianFromArray(numbers: number[]): number {

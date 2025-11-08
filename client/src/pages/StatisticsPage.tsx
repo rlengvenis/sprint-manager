@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import type { Sprint } from '../types';
-import { calculateAccuracy } from '../utils/calculations';
+import { calculateDelta } from '../utils/calculations';
 
 export default function StatisticsPage() {
   const [sprints, setSprints] = useState<Sprint[]>([]);
@@ -44,14 +44,37 @@ export default function StatisticsPage() {
     setExpandedSprintId(expandedSprintId === sprintId ? null : sprintId);
   };
 
-  const getAccuracyColor = (accuracy: number) => {
-    if (accuracy >= 95 && accuracy <= 105) {
-      return 'text-green-600';
-    } else if ((accuracy >= 90 && accuracy < 95) || (accuracy > 105 && accuracy <= 110)) {
-      return 'text-yellow-600';
+  const getDeltaColor = (delta: number) => {
+    if (delta > 0) {
+      return 'text-green-600'; // Over-delivered
+    } else if (delta < 0) {
+      return 'text-red-600'; // Under-delivered
     } else {
-      return 'text-red-600';
+      return 'text-gray-600'; // Exactly on target
     }
+  };
+
+  const formatDelta = (delta: number) => {
+    const sign = delta >= 0 ? '+' : '';
+    return `${sign}${delta.toFixed(2)}`;
+  };
+
+  const calculateHistoricalMedianVelocity = (currentSprint: Sprint) => {
+    // Get all sprints completed before this sprint was created
+    const priorSprints = sprints.filter(s => {
+      const completedDate = s.completedAt ? new Date(s.completedAt) : null;
+      const currentCreatedDate = new Date(currentSprint.createdAt);
+      return completedDate && completedDate < currentCreatedDate && s.actualVelocity !== null;
+    });
+
+    if (priorSprints.length === 0) return null;
+
+    // Calculate median velocity per day from prior sprints
+    const velocitiesPerDay = priorSprints.map(s => s.actualVelocity! / s.totalDaysAvailable);
+    const sortedVelocities = [...velocitiesPerDay].sort((a, b) => a - b);
+    const medianVelocityPerDay = sortedVelocities[Math.floor(sortedVelocities.length / 2)];
+    
+    return medianVelocityPerDay;
   };
 
   const calculateMemberDaysAvailable = (availability: Sprint['memberAvailability'][0], sprintLength: number) => {
@@ -64,21 +87,21 @@ export default function StatisticsPage() {
   const calculateSummaryStats = () => {
     if (sprints.length === 0) {
       return {
-        averageAccuracy: 0,
+        averageDelta: 0,
         medianVelocity: 0,
         totalSprints: 0,
       };
     }
 
-    const accuracies = sprints.map(s => calculateAccuracy(s.forecastVelocity, s.actualVelocity!));
-    const averageAccuracy = accuracies.reduce((a, b) => a + b, 0) / accuracies.length;
+    const deltas = sprints.map(s => calculateDelta(s.forecastVelocity, s.actualVelocity!));
+    const averageDelta = deltas.reduce((a, b) => a + b, 0) / deltas.length;
 
     const velocitiesPerDay = sprints.map(s => s.actualVelocity! / s.totalDaysAvailable);
     const sortedVelocities = [...velocitiesPerDay].sort((a, b) => a - b);
     const medianVelocity = sortedVelocities[Math.floor(sortedVelocities.length / 2)];
 
     return {
-      averageAccuracy,
+      averageDelta,
       medianVelocity,
       totalSprints: sprints.length,
     };
@@ -161,13 +184,14 @@ export default function StatisticsPage() {
           <h3 className="text-lg font-semibold text-gray-800 mb-6">Summary Statistics</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Average Accuracy */}
+            {/* Average Delta */}
             <div className="bg-blue-50 rounded-lg p-6 text-center border border-blue-100">
               <div className="text-2xl mb-2">📊</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Average Accuracy</div>
-              <div className="text-3xl font-bold text-blue-600">
-                {stats.averageAccuracy.toFixed(1)}%
+              <div className="text-sm font-medium text-gray-600 mb-2">Average Delta</div>
+              <div className={`text-3xl font-bold ${getDeltaColor(stats.averageDelta)}`}>
+                {formatDelta(stats.averageDelta)}
               </div>
+              <div className="text-sm text-gray-500 mt-1">points</div>
             </div>
 
             {/* Median Velocity */}
@@ -203,15 +227,17 @@ export default function StatisticsPage() {
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Sprint Name</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Days Avail.</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Median V/D</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Forecast</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Actual</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Accuracy %</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Delta</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {sprints.map((sprint) => {
-                  const accuracy = calculateAccuracy(sprint.forecastVelocity, sprint.actualVelocity!);
+                  const delta = calculateDelta(sprint.forecastVelocity, sprint.actualVelocity!);
+                  const historicalMedian = calculateHistoricalMedianVelocity(sprint);
                   const isExpanded = expandedSprintId === sprint.id;
 
                   return (
@@ -228,14 +254,17 @@ export default function StatisticsPage() {
                         <td className="px-6 py-4 text-center text-gray-700">
                           {sprint.totalDaysAvailable.toFixed(1)}
                         </td>
+                        <td className="px-6 py-4 text-center text-gray-600 text-sm">
+                          {historicalMedian ? historicalMedian.toFixed(2) : 'N/A'}
+                        </td>
                         <td className="px-6 py-4 text-center text-gray-700">
                           {sprint.forecastVelocity.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 text-center text-gray-700 font-medium">
                           {sprint.actualVelocity?.toFixed(2)}
                         </td>
-                        <td className={`px-6 py-4 text-center font-semibold ${getAccuracyColor(accuracy)}`}>
-                          {accuracy.toFixed(1)}%
+                        <td className={`px-6 py-4 text-center font-semibold ${getDeltaColor(delta)}`}>
+                          {formatDelta(delta)}
                         </td>
                         <td className="px-6 py-4 text-center text-gray-400">
                           {isExpanded ? '▼' : '▶'}
@@ -244,7 +273,7 @@ export default function StatisticsPage() {
                       
                       {isExpanded && (
                         <tr>
-                          <td colSpan={6} className="px-6 py-4 bg-gray-50">
+                          <td colSpan={7} className="px-6 py-4 bg-gray-50">
                             <div className="space-y-3">
                               <h4 className="font-semibold text-gray-800 mb-3">Sprint Details</h4>
                               
