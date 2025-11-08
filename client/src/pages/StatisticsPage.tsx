@@ -7,6 +7,10 @@ import {
   calculateMemberDaysAvailable,
   calculateSummaryStats 
 } from '../utils/sprintMetrics';
+import { formatDate, getDeltaColor, formatDelta } from '../utils/formatting';
+import { MetricCard } from '../components/MetricCard';
+import { LoadingScreen } from '../components/LoadingScreen';
+import { Alert } from '../components/Alert';
 
 export default function StatisticsPage() {
   const [sprints, setSprints] = useState<Sprint[]>([]);
@@ -49,36 +53,8 @@ export default function StatisticsPage() {
     setExpandedSprintId(expandedSprintId === sprintId ? null : sprintId);
   };
 
-  const getDeltaColor = (delta: number) => {
-    if (delta > 0) {
-      return 'text-green-600'; // Over-delivered
-    } else if (delta < 0) {
-      return 'text-red-600'; // Under-delivered
-    } else {
-      return 'text-gray-600'; // Exactly on target
-    }
-  };
-
-  const formatDelta = (delta: number) => {
-    const sign = delta >= 0 ? '+' : '';
-    return `${sign}${delta.toFixed(2)}`;
-  };
-
-  const formatDate = (date: Date | null) => {
-    if (!date) return 'N/A';
-    return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-  };
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <div className="text-xl text-gray-600">Loading...</div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen maxWidth="7xl" />;
   }
 
   if (error) {
@@ -86,10 +62,7 @@ export default function StatisticsPage() {
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Sprint Statistics</h1>
-          
-          <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
+          <Alert type="error" message={error} className="mb-6" />
         </div>
       </div>
     );
@@ -141,7 +114,7 @@ export default function StatisticsPage() {
           <h3 className="text-lg font-semibold text-gray-800 mb-6">Summary Statistics</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Average Delta */}
+            {/* Average Delta - custom styling for dynamic color */}
             <div className="bg-blue-50 rounded-lg p-6 text-center border border-blue-100">
               <div className="text-2xl mb-2">📊</div>
               <div className="text-sm font-medium text-gray-600 mb-2">Average Delta</div>
@@ -150,25 +123,20 @@ export default function StatisticsPage() {
               </div>
               <div className="text-sm text-gray-500 mt-1">points</div>
             </div>
-
-            {/* Median Velocity */}
-            <div className="bg-green-50 rounded-lg p-6 text-center border border-green-100">
-              <div className="text-2xl mb-2">🎯</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Median Velocity</div>
-              <div className="text-3xl font-bold text-green-600">
-                {stats.medianVelocity.toFixed(2)}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">points/day</div>
-            </div>
-
-            {/* Total Sprints */}
-            <div className="bg-purple-50 rounded-lg p-6 text-center border border-purple-100">
-              <div className="text-2xl mb-2">📈</div>
-              <div className="text-sm font-medium text-gray-600 mb-2">Total Sprints</div>
-              <div className="text-3xl font-bold text-purple-600">
-                {stats.totalSprints}
-              </div>
-            </div>
+            <MetricCard
+              icon="🎯"
+              label="Median Velocity"
+              value={stats.medianVelocity.toFixed(2)}
+              unit="points/day"
+              colorClass="green"
+            />
+            <MetricCard
+              icon="📈"
+              label="Total Sprints"
+              value={stats.totalSprints.toString()}
+              unit=""
+              colorClass="purple"
+            />
           </div>
         </div>
 

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import type { Team } from '../types';
+import { Alert } from '../components/Alert';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 interface MemberForm {
   id?: string;
@@ -126,15 +128,7 @@ export default function SettingsPage() {
   };
 
   if (loadingTeam) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center py-12">
-            <div className="text-xl text-gray-600">Loading...</div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen maxWidth="4xl" />;
   }
 
   return (
@@ -143,18 +137,10 @@ export default function SettingsPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Team Settings</h1>
 
         {/* Success Message */}
-        {success && (
-          <div className="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md">
-            {success}
-          </div>
-        )}
+        {success && <Alert type="success" message={success} className="mb-6" />}
 
         {/* Error Message */}
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
-            {error}
-          </div>
-        )}
+        {error && <Alert type="error" message={error} className="mb-6" />}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Team Information */}

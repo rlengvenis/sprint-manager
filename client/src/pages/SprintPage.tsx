@@ -8,6 +8,8 @@ import {
   calculateMemberWeightedDays
 } from '../utils/sprintMetrics';
 import { MetricCard } from '../components/MetricCard';
+import { Alert } from '../components/Alert';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 interface MemberAvailabilityInput {
   memberId: string;
@@ -179,15 +181,7 @@ export default function SprintPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center py-12">
-            <div className="text-xl text-gray-600">Loading...</div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen maxWidth="4xl" />;
   }
 
   // If no active sprint, show add sprint form
@@ -197,9 +191,7 @@ export default function SprintPage() {
         <div className="min-h-screen bg-gray-50 py-8">
           <div className="max-w-4xl mx-auto px-4">
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Active Sprint</h1>
-            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-md">
-              No teams available. Please create a team first in Settings.
-            </div>
+            <Alert type="warning" message="No teams available. Please create a team first in Settings." />
           </div>
         </div>
       );
@@ -220,18 +212,10 @@ export default function SprintPage() {
           </div>
 
           {/* Success Message */}
-          {success && (
-            <div className="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md">
-              {success}
-            </div>
-          )}
+          {success && <Alert type="success" message={success} className="mb-6" />}
 
           {/* Error Message */}
-          {error && (
-            <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
-              {error}
-            </div>
-          )}
+          {error && <Alert type="error" message={error} className="mb-6" />}
 
           <form onSubmit={handleCreateSprint} className="space-y-6">
             {/* Sprint Information */}
@@ -370,18 +354,10 @@ export default function SprintPage() {
         <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Active Sprint</h1>
 
         {/* Success Message */}
-        {success && (
-          <div className="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
-            {success}
-          </div>
-        )}
+        {success && <Alert type="success" message={success} className="mb-6" />}
 
         {/* Error Message */}
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-            {error}
-          </div>
-        )}
+        {error && <Alert type="error" message={error} className="mb-6" />}
 
         {/* Sprint Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-blue-500">
