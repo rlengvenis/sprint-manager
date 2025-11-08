@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import AddSprintPage from './pages/AddSprintPage';
-import TeamSetupPage from './pages/TeamSetupPage';
+import SettingsPage from './pages/SettingsPage';
 import ActiveSprintPage from './pages/ActiveSprintPage';
 import HistoryPage from './pages/HistoryPage';
 import { api } from './services/api';
@@ -46,16 +46,16 @@ function App() {
                   🎯 Active Sprint
                 </Link>
                 <Link 
-                  to="/team-setup" 
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
-                >
-                  👥 Team Setup
-                </Link>
-                <Link 
                   to="/history" 
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
                 >
                   📊 History
+                </Link>
+                <Link 
+                  to="/settings" 
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
+                >
+                  ⚙️ Settings
                 </Link>
               </div>
             </div>
@@ -66,7 +66,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ActiveSprintPage />} />
           <Route path="/add-sprint" element={<AddSprintPage />} />
-          <Route path="/team-setup" element={<TeamSetupPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/forecast" element={<ActiveSprintPage />} />
           <Route path="/history" element={<HistoryPage />} />
         </Routes>

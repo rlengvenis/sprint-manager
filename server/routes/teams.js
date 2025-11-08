@@ -50,6 +50,23 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT /api/teams/:id - update team
+router.put('/:id', async (req, res) => {
+  try {
+    const team = await Team.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!team) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+    res.json(team);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // PATCH /api/teams/:id/default - set as default team
 router.patch('/:id/default', async (req, res) => {
   try {

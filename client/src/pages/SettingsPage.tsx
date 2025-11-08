@@ -1,20 +1,60 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import type { Team } from '../types';
 
 interface MemberForm {
+  id?: string;
   firstName: string;
   lastName: string;
   velocityWeight: number | "";
 }
 
-export default function TeamSetupPage() {
+export default function SettingsPage() {
+  const [existingTeams, setExistingTeams] = useState<Team[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [teamName, setTeamName] = useState('');
   const [sprintSize, setSprintSize] = useState<number | "">(10);
   const [isDefault, setIsDefault] = useState(false);
   const [members, setMembers] = useState<MemberForm[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingTeams, setLoadingTeams] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadTeams();
+  }, []);
+
+  const loadTeams = async () => {
+    try {
+      setLoadingTeams(true);
+      const teams = await api.teams.getAll();
+      setExistingTeams(teams);
+      
+      // If teams exist, select the first one (or default)
+      if (teams.length > 0) {
+        const defaultTeam = teams.find((t: Team) => t.isDefault) || teams[0];
+        selectTeamForEdit(defaultTeam);
+      }
+    } catch (err) {
+      console.error('Failed to load teams:', err);
+    } finally {
+      setLoadingTeams(false);
+    }
+  };
+
+  const selectTeamForEdit = (team: Team) => {
+    setSelectedTeam(team);
+    setTeamName(team.name);
+    setSprintSize(team.sprintSizeInDays);
+    setIsDefault(team.isDefault);
+    setMembers(team.members.map(m => ({
+      id: m.id,
+      firstName: m.firstName,
+      lastName: m.lastName,
+      velocityWeight: m.velocityWeight
+    })));
+  };
 
   const addMember = () => {
     setMembers([...members, { firstName: '', lastName: '', velocityWeight: 1.0 }]);
@@ -42,39 +82,84 @@ export default function TeamSetupPage() {
         sprintSizeInDays: sprintSize,
         isDefault,
         members: members.map(m => ({
-          ...m,
+          id: m.id,
+          firstName: m.firstName,
+          lastName: m.lastName,
           velocityWeight: m.velocityWeight
         })),
       };
 
-      const result = await api.teams.create(teamData);
-      setSuccess(`Team "${result.name}" created successfully!`);
-      
-      // Clear form
-      setTeamName('');
-      setSprintSize(10);
-      setIsDefault(false);
-      setMembers([]);
+      if (selectedTeam) {
+        // Update existing team
+        const result = await api.teams.update(selectedTeam.id, teamData);
+        setSuccess(`Team "${result.name}" updated successfully!`);
+        await loadTeams();
+      } else {
+        // Create new team
+        const result = await api.teams.create(teamData);
+        setSuccess(`Team "${result.name}" created successfully!`);
+        await loadTeams();
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create team');
+      setError(err instanceof Error ? err.message : 'Failed to save team');
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancel = () => {
-    setTeamName('');
-    setSprintSize(10);
-    setIsDefault(false);
-    setMembers([]);
+    if (selectedTeam) {
+      selectTeamForEdit(selectedTeam);
+    } else {
+      setTeamName('');
+      setSprintSize(10);
+      setIsDefault(false);
+      setMembers([]);
+    }
     setError(null);
     setSuccess(null);
   };
 
+  if (loadingTeams) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center py-12">
+            <div className="text-xl text-gray-600">Loading...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Team Setup Page</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Settings</h1>
+
+        {/* Team Selection (if multiple teams exist) */}
+        {existingTeams.length > 1 && (
+          <div className="bg-white rounded-lg shadow p-4 mb-6">
+            <label htmlFor="teamSelect" className="block text-sm font-medium text-gray-700 mb-2">
+              Select Team to Edit:
+            </label>
+            <select
+              id="teamSelect"
+              value={selectedTeam?.id || ''}
+              onChange={(e) => {
+                const team = existingTeams.find(t => t.id === e.target.value);
+                if (team) selectTeamForEdit(team);
+              }}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {existingTeams.map(team => (
+                <option key={team.id} value={team.id}>
+                  {team.name} {team.isDefault ? '(Default)' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Success Message */}
         {success && (
@@ -246,7 +331,7 @@ export default function TeamSetupPage() {
               disabled={loading}
               className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Saving...' : 'Save Team'}
+              {loading ? 'Saving...' : selectedTeam ? 'Update Team' : 'Create Team'}
             </button>
           </div>
         </form>

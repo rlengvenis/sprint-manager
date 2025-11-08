@@ -50,6 +50,10 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+    update: (id: string, data: any) => fetchAPI(`/teams/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
     setDefault: (id: string) => fetchAPI(`/teams/${id}/default`, {
       method: 'PATCH',
     }),
