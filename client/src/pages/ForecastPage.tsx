@@ -51,14 +51,12 @@ export default function ForecastPage() {
       setLoading(true);
       setError(null);
       await api.sprints.complete(sprint.id, parseFloat(actualVelocity));
-      setSuccess('Sprint completed successfully!');
+      setSuccess('Sprint completed successfully! Reloading...');
       
-      // Reload to show empty state
+      // Reload page to update navigation and show empty state
       setTimeout(() => {
-        loadCurrentSprint();
-        setSuccess(null);
-        setActualVelocity('');
-      }, 2000);
+        window.location.reload();
+      }, 1500);
     } catch (err) {
       setError('Failed to complete sprint');
     } finally {

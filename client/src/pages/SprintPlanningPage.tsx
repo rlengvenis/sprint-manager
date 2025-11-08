@@ -19,12 +19,30 @@ export default function SprintPlanningPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [checkingActiveSprint, setCheckingActiveSprint] = useState(true);
+
+  // Check for active sprint on mount
+  useEffect(() => {
+    checkActiveSprint();
+  }, []);
 
   // Load teams on mount
   useEffect(() => {
     loadTeams();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const checkActiveSprint = async () => {
+    try {
+      const defaultTeam = await api.teams.getDefault();
+      await api.sprints.getCurrent(defaultTeam.id);
+      // If we get here, there's an active sprint - redirect to forecast
+      window.location.href = '/forecast';
+    } catch {
+      // No active sprint, allow access to planning page
+      setCheckingActiveSprint(false);
+    }
+  };
 
   const loadTeams = async () => {
     try {
@@ -142,6 +160,19 @@ export default function SprintPlanningPage() {
   };
 
   const forecast = calculateForecast();
+
+  // Show loading while checking for active sprint
+  if (checkingActiveSprint) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center py-12">
+            <div className="text-xl text-gray-600">Loading...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!selectedTeam) {
     return (

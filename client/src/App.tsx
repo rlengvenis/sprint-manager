@@ -1,10 +1,28 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import SprintPlanningPage from './pages/SprintPlanningPage';
 import TeamSetupPage from './pages/TeamSetupPage';
 import ForecastPage from './pages/ForecastPage';
 import HistoryPage from './pages/HistoryPage';
+import { api } from './services/api';
 
 function App() {
+  const [hasActiveSprint, setHasActiveSprint] = useState<boolean>(false);
+
+  useEffect(() => {
+    checkActiveSprint();
+  }, []);
+
+  const checkActiveSprint = async () => {
+    try {
+      const defaultTeam = await api.teams.getDefault();
+      await api.sprints.getCurrent(defaultTeam.id);
+      setHasActiveSprint(true);
+    } catch {
+      setHasActiveSprint(false);
+    }
+  };
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
@@ -25,12 +43,14 @@ function App() {
                 >
                   👥 Team Setup
                 </Link>
-                <Link 
-                  to="/planning" 
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
-                >
-                  📋 Sprint Planning
-                </Link>
+                {!hasActiveSprint && (
+                  <Link 
+                    to="/planning" 
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
+                  >
+                    📋 Sprint Planning
+                  </Link>
+                )}
                 <Link 
                   to="/forecast" 
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
