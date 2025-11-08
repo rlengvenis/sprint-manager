@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Model } from 'mongoose';
+import type { Team as TeamType, TeamMember } from '../types/index.js';
 
-const teamMemberSchema = new mongoose.Schema({
+const teamMemberSchema = new Schema<TeamMember>({
   firstName: {
     type: String,
     required: true,
@@ -20,7 +21,7 @@ const teamMemberSchema = new mongoose.Schema({
   },
 });
 
-const teamSchema = new mongoose.Schema({
+const teamSchema = new Schema<TeamType>({
   name: {
     type: String,
     required: true,
@@ -37,7 +38,7 @@ const teamSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const Team = mongoose.model('Team', teamSchema);
+const Team: Model<TeamType> = mongoose.model<TeamType>('Team', teamSchema);
 
 export default Team;
 

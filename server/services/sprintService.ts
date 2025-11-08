@@ -1,10 +1,11 @@
 import Sprint from '../models/Sprint.js';
 import Team from '../models/Team.js';
+import type { Sprint as SprintType, CreateSprintData } from '../types/index.js';
 
 /**
  * Get current active sprint
  */
-export async function getCurrentSprint() {
+export async function getCurrentSprint(): Promise<SprintType> {
   const sprint = await Sprint.findOne({
     actualVelocity: null
   });
@@ -19,7 +20,7 @@ export async function getCurrentSprint() {
 /**
  * Get completed sprints with member details enriched
  */
-export async function getSprintHistory() {
+export async function getSprintHistory(): Promise<any[]> {
   const sprints = await Sprint.find({
     actualVelocity: { $ne: null }
   }).sort({ completedAt: -1 });
@@ -31,12 +32,12 @@ export async function getSprintHistory() {
   }
 
   // Enrich sprints with member details
-  const enrichedSprints = sprints.map(sprint => {
-    const sprintObj = sprint.toObject();
+  const enrichedSprints = sprints.map((sprint) => {
+    const sprintObj: any = sprint.toObject();
     
-    sprintObj.memberAvailability = sprintObj.memberAvailability.map(avail => {
-      const member = team.members.find(m => 
-        m._id.toString() === avail.memberId.toString()
+    sprintObj.memberAvailability = sprintObj.memberAvailability.map((avail: any) => {
+      const member = team.members.find((m) => 
+        m._id?.toString() === avail.memberId.toString()
       );
       
       return {
@@ -57,7 +58,7 @@ export async function getSprintHistory() {
 /**
  * Get all sprints
  */
-export async function getAllSprints() {
+export async function getAllSprints(): Promise<SprintType[]> {
   const sprints = await Sprint.find().sort({ createdAt: -1 });
   return sprints;
 }
@@ -65,7 +66,7 @@ export async function getAllSprints() {
 /**
  * Get sprint by ID
  */
-export async function getSprintById(id) {
+export async function getSprintById(id: string): Promise<SprintType> {
   const sprint = await Sprint.findById(id);
   
   if (!sprint) {
@@ -78,7 +79,7 @@ export async function getSprintById(id) {
 /**
  * Create a new sprint
  */
-export async function createSprint(sprintData) {
+export async function createSprint(sprintData: CreateSprintData): Promise<SprintType> {
   // Check if there's already an active sprint
   const activeSprint = await Sprint.findOne({ actualVelocity: null });
   
@@ -95,7 +96,7 @@ export async function createSprint(sprintData) {
 /**
  * Complete a sprint with actual velocity
  */
-export async function completeSprint(id, actualVelocity) {
+export async function completeSprint(id: string, actualVelocity: number | undefined): Promise<SprintType> {
   if (actualVelocity === undefined) {
     throw new Error('actualVelocity is required');
   }

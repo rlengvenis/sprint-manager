@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Model } from 'mongoose';
+import type { Sprint as SprintType, MemberAvailability } from '../types/index.js';
 
-const memberAvailabilitySchema = new mongoose.Schema({
+const memberAvailabilitySchema = new Schema<MemberAvailability>({
   memberId: {
     type: String,
     required: true,
@@ -13,14 +14,14 @@ const memberAvailabilitySchema = new mongoose.Schema({
   },
 });
 
-const sprintSchema = new mongoose.Schema({
+const sprintSchema = new Schema<SprintType>({
   name: {
     type: String,
     required: true,
     trim: true,
   },
   teamId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Team',
     required: true,
   },
@@ -53,7 +54,7 @@ const sprintSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const Sprint = mongoose.model('Sprint', sprintSchema);
+const Sprint: Model<SprintType> = mongoose.model<SprintType>('Sprint', sprintSchema);
 
 export default Sprint;
 
