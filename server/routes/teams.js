@@ -57,6 +57,11 @@ router.patch('/:id/default', async (req, res) => {
     if (!team) {
       return res.status(404).json({ error: 'Team not found' });
     }
+    
+    // Unset all other teams' default status
+    await Team.updateMany({ _id: { $ne: req.params.id } }, { isDefault: false });
+    
+    // Set this team as default
     team.isDefault = true;
     await team.save();
     res.json(team);
