@@ -3,7 +3,6 @@ import { api } from '../services/api';
 import type { Sprint } from '../types';
 import { 
   calculateDelta, 
-  calculateHistoricalMedianVelocity, 
   calculateMemberDaysAvailable,
   calculateSummaryStats 
 } from '../utils/sprintMetrics';
@@ -151,19 +150,21 @@ export default function StatisticsPage() {
               <thead className="bg-gray-50 border-b-2 border-gray-200">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Sprint Name</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Days Avail.</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Median V/D</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Forecast</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Actual</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Forecasted</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Delivered</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Delta</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Story Points/Day</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Days Available</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {sprints.map((sprint) => {
                   const delta = calculateDelta(sprint.forecastVelocity, sprint.actualVelocity!);
-                  const historicalMedian = calculateHistoricalMedianVelocity(sprint, sprints);
                   const isExpanded = expandedSprintId === sprint.id;
+                  const pointsPerDay = sprint.actualVelocity && sprint.totalDaysAvailable > 0
+                    ? sprint.actualVelocity / sprint.totalDaysAvailable
+                    : 0;
 
                   return (
                     <>
@@ -177,12 +178,6 @@ export default function StatisticsPage() {
                           <div className="text-sm text-gray-500">{formatDate(sprint.completedAt)}</div>
                         </td>
                         <td className="px-6 py-4 text-center text-gray-700">
-                          {sprint.totalDaysAvailable.toFixed(1)}
-                        </td>
-                        <td className="px-6 py-4 text-center text-gray-600 text-sm">
-                          {historicalMedian ? historicalMedian.toFixed(2) : 'N/A'}
-                        </td>
-                        <td className="px-6 py-4 text-center text-gray-700">
                           {sprint.forecastVelocity.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 text-center text-gray-700 font-medium">
@@ -190,6 +185,12 @@ export default function StatisticsPage() {
                         </td>
                         <td className={`px-6 py-4 text-center font-semibold ${getDeltaColor(delta)}`}>
                           {formatDelta(delta)}
+                        </td>
+                        <td className="px-6 py-4 text-center text-gray-700">
+                          {pointsPerDay.toFixed(2)}
+                        </td>
+                        <td className="px-6 py-4 text-center text-gray-700">
+                          {sprint.totalDaysAvailable.toFixed(1)}
                         </td>
                         <td className="px-6 py-4 text-center text-gray-400">
                           {isExpanded ? '▼' : '▶'}
