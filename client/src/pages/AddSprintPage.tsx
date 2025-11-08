@@ -8,7 +8,7 @@ interface MemberAvailabilityInput {
   daysOff: number | "";
 }
 
-export default function SprintPlanningPage() {
+export default function AddSprintPage() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [historicalSprints, setHistoricalSprints] = useState<Sprint[]>([]);
@@ -39,7 +39,7 @@ export default function SprintPlanningPage() {
       // If we get here, there's an active sprint - redirect to active sprint page
       window.location.href = '/';
     } catch {
-      // No active sprint, allow access to planning page
+      // No active sprint, allow access to add sprint page
       setCheckingActiveSprint(false);
     }
   };
@@ -178,7 +178,7 @@ export default function SprintPlanningPage() {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Sprint Planning Page</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">Add Sprint</h1>
           <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-md">
             No teams available. Please create a team first.
           </div>
@@ -190,7 +190,7 @@ export default function SprintPlanningPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Sprint Planning Page</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Add Sprint</h1>
 
         {/* Team Selection */}
         <div className="bg-white rounded-lg shadow p-4 mb-6 flex justify-between items-center">

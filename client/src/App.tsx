@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import SprintPlanningPage from './pages/SprintPlanningPage';
+import AddSprintPage from './pages/AddSprintPage';
 import TeamSetupPage from './pages/TeamSetupPage';
 import ActiveSprintPage from './pages/ActiveSprintPage';
 import HistoryPage from './pages/HistoryPage';
@@ -31,6 +31,14 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               <div className="flex space-x-8">
+                {!hasActiveSprint && (
+                  <Link 
+                    to="/add-sprint" 
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
+                  >
+                    ➕ Add Sprint
+                  </Link>
+                )}
                 <Link 
                   to="/" 
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
@@ -43,14 +51,6 @@ function App() {
                 >
                   👥 Team Setup
                 </Link>
-                {!hasActiveSprint && (
-                  <Link 
-                    to="/planning" 
-                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
-                  >
-                    📋 Sprint Planning
-                  </Link>
-                )}
                 <Link 
                   to="/history" 
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
@@ -65,8 +65,8 @@ function App() {
         {/* Routes */}
         <Routes>
           <Route path="/" element={<ActiveSprintPage />} />
+          <Route path="/add-sprint" element={<AddSprintPage />} />
           <Route path="/team-setup" element={<TeamSetupPage />} />
-          <Route path="/planning" element={<SprintPlanningPage />} />
           <Route path="/forecast" element={<ActiveSprintPage />} />
           <Route path="/history" element={<HistoryPage />} />
         </Routes>
