@@ -3,7 +3,6 @@ import { Document, Types } from 'mongoose';
 export interface TeamMember {
   _id?: Types.ObjectId;
   firstName: string;
-  lastName: string;
   velocityWeight: number;
 }
 
@@ -21,7 +20,6 @@ export interface MemberAvailability {
   memberId: string;
   daysOff: number;
   firstName?: string;
-  lastName?: string;
   velocityWeight?: number;
 }
 

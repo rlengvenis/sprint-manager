@@ -7,11 +7,6 @@ const teamMemberSchema = new Schema<TeamMember>({
     required: true,
     trim: true,
   },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true,
-  },
   velocityWeight: {
     type: Number,
     required: true,

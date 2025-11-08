@@ -258,7 +258,7 @@ export default function SprintPage() {
                     >
                       <div className="flex-1">
                         <div className="font-medium text-gray-900">
-                          {member.firstName} {member.lastName}
+                          {member.firstName}
                         </div>
                         <div className="text-sm text-gray-600">
                           Velocity Weight: {member.velocityWeight}
@@ -415,7 +415,7 @@ export default function SprintPage() {
                 return (
                   <div key={member.id} className="flex justify-between items-center py-2 px-3 bg-gray-50 rounded">
                     <span className="text-gray-700">
-                      {member.firstName} {member.lastName} <span className="text-gray-500">({member.velocityWeight}x)</span>
+                      {member.firstName} <span className="text-gray-500">({member.velocityWeight}x)</span>
                     </span>
                     <span className="text-gray-800 font-medium">
                       {daysAvailable.toFixed(1)} days available

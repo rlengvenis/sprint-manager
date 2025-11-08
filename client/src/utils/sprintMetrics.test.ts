@@ -18,8 +18,8 @@ describe('calculateTotalDaysAvailable', () => {
       name: 'Test Team',
       sprintSizeInDays: 10,
       members: [
-        { id: '1', firstName: 'John', lastName: 'Doe', velocityWeight: 1.0 },
-        { id: '2', firstName: 'Jane', lastName: 'Smith', velocityWeight: 0.8 },
+        { id: '1', firstName: 'John', velocityWeight: 1.0, teamId: '1' },
+        { id: '2', firstName: 'Jane', velocityWeight: 0.8, teamId: '1' },
       ],
     };
 
@@ -38,7 +38,7 @@ describe('calculateTotalDaysAvailable', () => {
       name: 'Test Team',
       sprintSizeInDays: 10,
       members: [
-        { id: '1', firstName: 'John', lastName: 'Doe', velocityWeight: 1.0 },
+        { id: '1', firstName: 'John', velocityWeight: 1.0, teamId: '1' },
       ],
     };
 
@@ -69,7 +69,7 @@ describe('calculateTotalDaysAvailable', () => {
       name: 'Test Team',
       sprintSizeInDays: 10,
       members: [
-        { id: '1', firstName: 'John', lastName: 'Doe', velocityWeight: 1.0 },
+        { id: '1', firstName: 'John', velocityWeight: 1.0, teamId: '1' },
       ],
     };
 

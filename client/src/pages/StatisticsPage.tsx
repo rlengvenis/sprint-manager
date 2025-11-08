@@ -223,7 +223,7 @@ export default function StatisticsPage() {
                                     return (
                                       <div key={availability.memberId} className="flex justify-between py-1">
                                         <span className="text-gray-700">
-                                          • {availability.firstName} {availability.lastName} ({availability.velocityWeight}x)
+                                          • {availability.firstName} ({availability.velocityWeight}x)
                                         </span>
                                         <span className="text-gray-800">
                                           {daysAvailable.toFixed(1)} days

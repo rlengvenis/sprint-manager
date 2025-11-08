@@ -22,21 +22,18 @@ describe('TeamService', () => {
       {
         id: 'member-1',
         firstName: 'Alice',
-        lastName: 'Johnson',
         velocityWeight: 1.0,
         teamId: 'team-1'
       },
       {
         id: 'member-2',
         firstName: 'Bob',
-        lastName: 'Williams',
         velocityWeight: 0.9,
         teamId: 'team-1'
       },
       {
         id: 'member-3',
         firstName: 'Charlie',
-        lastName: 'Brown',
         velocityWeight: 1.1,
         teamId: 'team-1'
       }
@@ -62,7 +59,6 @@ describe('TeamService', () => {
       const team = await teamService.createTeam(teamData);
 
       expect(team.members[0].firstName).toBe('Alice');
-      expect(team.members[0].lastName).toBe('Johnson');
       expect(team.members[0].velocityWeight).toBe(1.0);
       expect(team.members[1].firstName).toBe('Bob');
       expect(team.members[1].velocityWeight).toBe(0.9);
@@ -95,7 +91,6 @@ describe('TeamService', () => {
           {
             id: 'solo-member',
             firstName: 'Solo',
-            lastName: 'Dev',
             velocityWeight: 1.0,
             teamId: 'team-1'
           }
@@ -201,7 +196,6 @@ describe('TeamService', () => {
         {
           id: 'new-member-1',
           firstName: 'David',
-          lastName: 'Smith',
           velocityWeight: 1.2,
           teamId: 'team-1'
         }
@@ -225,7 +219,6 @@ describe('TeamService', () => {
           {
             id: 'updated-member',
             firstName: 'Eve',
-            lastName: 'Davis',
             velocityWeight: 0.95,
             teamId: 'team-1'
           }
@@ -260,7 +253,6 @@ describe('TeamService', () => {
           {
             id: 'initial-member',
             firstName: 'Initial',
-            lastName: 'Member',
             velocityWeight: 1.0,
             teamId: 'team-1'
           }
@@ -272,14 +264,12 @@ describe('TeamService', () => {
         {
           id: 'initial-member',
           firstName: 'Initial',
-          lastName: 'Member',
           velocityWeight: 1.0,
           teamId: 'team-1'
         },
         {
           id: 'added-member',
           firstName: 'Added',
-          lastName: 'Member',
           velocityWeight: 0.9,
           teamId: 'team-1'
         }
@@ -299,14 +289,12 @@ describe('TeamService', () => {
         {
           id: 'member-1',
           firstName: 'Alice',
-          lastName: 'Johnson',
           velocityWeight: 1.5, // Changed from 1.0
           teamId: 'team-1'
         },
         {
           id: 'member-2',
           firstName: 'Bob',
-          lastName: 'Williams',
           velocityWeight: 0.5, // Changed from 0.9
           teamId: 'team-1'
         }
@@ -353,14 +341,12 @@ describe('TeamService', () => {
           {
             id: 'low-velocity',
             firstName: 'Low',
-            lastName: 'Velocity',
             velocityWeight: 0.1,
             teamId: 'team-1'
           },
           {
             id: 'high-velocity',
             firstName: 'High',
-            lastName: 'Velocity',
             velocityWeight: 2.0,
             teamId: 'team-1'
           }

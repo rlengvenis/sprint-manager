@@ -7,7 +7,6 @@ import { LoadingScreen } from '../components/LoadingScreen';
 interface MemberForm {
   id?: string;
   firstName: string;
-  lastName: string;
   velocityWeight: number | "";
 }
 
@@ -32,10 +31,9 @@ export default function SettingsPage() {
       setTeam(teamData);
       setTeamName(teamData.name);
       setSprintSize(teamData.sprintSizeInDays);
-      setMembers(teamData.members.map((m: { id: string; firstName: string; lastName: string; velocityWeight: number }) => ({
+      setMembers(teamData.members.map((m: { id: string; firstName: string; velocityWeight: number }) => ({
         id: m.id,
         firstName: m.firstName,
-        lastName: m.lastName,
         velocityWeight: m.velocityWeight
       })));
     } catch (err) {
@@ -48,7 +46,7 @@ export default function SettingsPage() {
   };
 
   const addMember = () => {
-    setMembers([...members, { firstName: '', lastName: '', velocityWeight: 1.0 }]);
+    setMembers([...members, { firstName: '', velocityWeight: 1.0 }]);
   };
 
   const removeMember = (index: number) => {
@@ -78,12 +76,11 @@ export default function SettingsPage() {
         sprintSizeInDays: sprintSize,
         members: members.map(m => {
           if (typeof m.velocityWeight !== 'number' || m.velocityWeight <= 0) {
-            throw new Error(`Velocity weight for ${m.firstName} ${m.lastName} must be a valid positive number`);
+            throw new Error(`Velocity weight for ${m.firstName} must be a valid positive number`);
           }
           return {
             id: m.id || crypto.randomUUID(),
             firstName: m.firstName,
-            lastName: m.lastName,
             velocityWeight: m.velocityWeight,
             teamId: team?.id || '', // Will be set by backend for new teams
           };
@@ -115,7 +112,6 @@ export default function SettingsPage() {
       setMembers(team.members.map(m => ({
         id: m.id,
         firstName: m.firstName,
-        lastName: m.lastName,
         velocityWeight: m.velocityWeight
       })));
     } else {
@@ -220,10 +216,10 @@ export default function SettingsPage() {
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-medium text-gray-600 mb-1">
-                          First Name
+                          Name
                         </label>
                         <input
                           type="text"
@@ -232,20 +228,6 @@ export default function SettingsPage() {
                           required
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                           placeholder="John"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">
-                          Last Name
-                        </label>
-                        <input
-                          type="text"
-                          value={member.lastName}
-                          onChange={(e) => updateMember(index, 'lastName', e.target.value)}
-                          required
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                          placeholder="Doe"
                         />
                       </div>
 

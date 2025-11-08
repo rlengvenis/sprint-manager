@@ -44,7 +44,6 @@ export async function getSprintHistory(): Promise<any[]> {
         memberId: avail.memberId,
         daysOff: avail.daysOff,
         firstName: member?.firstName || 'Unknown',
-        lastName: member?.lastName || 'User',
         velocityWeight: member?.velocityWeight || 1.0
       };
     });

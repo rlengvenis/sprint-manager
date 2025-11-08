@@ -26,14 +26,12 @@ describe('SprintService', () => {
         {
           id: 'member-1',
           firstName: 'John',
-          lastName: 'Doe',
           velocityWeight: 1.0,
           teamId: 'team-1'
         },
         {
           id: 'member-2',
           firstName: 'Jane',
-          lastName: 'Smith',
           velocityWeight: 0.8,
           teamId: 'team-1'
         }
@@ -206,10 +204,8 @@ describe('SprintService', () => {
       const history = await sprintService.getSprintHistory();
 
       expect(history[0].memberAvailability[0].firstName).toBe('John');
-      expect(history[0].memberAvailability[0].lastName).toBe('Doe');
       expect(history[0].memberAvailability[0].velocityWeight).toBe(1.0);
       expect(history[0].memberAvailability[1].firstName).toBe('Jane');
-      expect(history[0].memberAvailability[1].lastName).toBe('Smith');
       expect(history[0].memberAvailability[1].velocityWeight).toBe(0.8);
     });
 
