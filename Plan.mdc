@@ -135,54 +135,30 @@ alwaysApply: true
 ## Feature 4: Sprint History (1-2 hours)
 
 ### 4.1 Calculation Utilities
-- [ ] Add `calculateAccuracy(forecast, actual)` to `calculations.ts`
+- [x] Add `calculateAccuracy(forecast, actual)` to `calculations.ts`
 
 ### 4.2 Backend API
-- [ ] GET `/api/sprints/history?teamId=X` - get completed sprints
-- [ ] Return sprints with accuracy calculations
+- [x] GET `/api/sprints/history?teamId=X` - get completed sprints
+- [x] Return sprints with accuracy calculations
 
 ### 4.3 Frontend UI
-- [ ] Create `client/src/pages/HistoryPage.tsx`
-- [ ] Build table with columns:
+- [x] Create `client/src/pages/HistoryPage.tsx`
+- [x] Build table with columns:
   - Sprint name
   - Total days available
   - Forecast velocity
   - Actual velocity
   - Accuracy %
   - Comment
-- [ ] Style table with TailwindCSS
-- [ ] Add sorting/filtering if needed
+- [x] Style table with TailwindCSS
+- [x] Add expandable row details for full sprint info
+- [x] Add summary statistics cards
 
 ### 4.4 Connect UI to API
-- [ ] Fetch history data on page load
-- [ ] Display accuracy percentages
-- [ ] Add empty state for no history
-- [ ] Test with multiple completed sprints
-
-
-## Feature 6: Polish & Testing (1-2 hours)
-
-### 6.1 Manual Testing
-- [ ] Test full user flow end-to-end
-- [ ] Create team → add members
-- [ ] Create multiple sprints
-- [ ] Complete sprints with actuals
-- [ ] Verify median calculation with 3+ sprints
-- [ ] Test edge cases (no data, zero values)
-
-### 6.3 Code Cleanup
-- [ ] Remove console.logs
-- [ ] Fix linter errors
-- [ ] Remove unused imports
-- [ ] Ensure consistent formatting
-
-### 6.4 Documentation
-- [ ] Create README.md with:
-  - Project overview
-  - Setup instructions (client + server)
-  - Environment variables
-  - How to run locally
-  - Tech stack
+- [x] Fetch history data on page load
+- [x] Display accuracy percentages with color coding
+- [x] Add empty state for no history
+- [x] Add route to App.tsx and navigation link
 
 ---
 
