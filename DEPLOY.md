@@ -45,7 +45,7 @@ heroku create
 
 ```bash
 # Set MongoDB connection string (use your Atlas connection string)
-heroku config:set MONGODB_URI="mongodb+srv://username:password@cluster.mongodb.net/sprint-manager"
+heroku config:set MONGODB_URI="mongodb+srv://<username>:<password>@cluster.mongodb.net/sprint-manager"
 
 # Set Node environment to production
 heroku config:set NODE_ENV=production
