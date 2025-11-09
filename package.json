@@ -1,0 +1,31 @@
+{
+  "name": "sprint-manager",
+  "version": "1.0.0",
+  "description": "Sprint velocity forecasting and tracking application",
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
+  },
+  "scripts": {
+    "heroku-prebuild": "echo 'Installing dependencies...'",
+    "heroku-postbuild": "cd client && npm install && npm run build && cd ../server && npm install && npm run build",
+    "start": "cd server && npm start",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "seed": "cd server && npm run seed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rlengvenis/sprint-manager.git"
+  },
+  "keywords": [
+    "sprint",
+    "velocity",
+    "scrum",
+    "agile",
+    "forecasting"
+  ],
+  "author": "Rokas Lengvenis",
+  "license": "MIT"
+}
+
