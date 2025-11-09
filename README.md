@@ -47,11 +47,18 @@ cd server
 npm install
 ```
 
-Create a `.env` file in the `server/` directory:
+Copy the environment template and configure:
+
+```bash
+cp .env.example .env
+```
+
+Edit `server/.env` with your configuration (defaults should work for local development):
 
 ```env
 PORT=5001
 MONGODB_URI=mongodb://localhost:27017/sprint-manager
+NODE_ENV=development
 ```
 
 ### 2. Setup Frontend
@@ -59,6 +66,18 @@ MONGODB_URI=mongodb://localhost:27017/sprint-manager
 ```bash
 cd client
 npm install
+```
+
+Copy the environment template and configure:
+
+```bash
+cp .env.example .env
+```
+
+Edit `client/.env` with your configuration (defaults should work for local development):
+
+```env
+VITE_API_BASE_URL=http://localhost:5001/api
 ```
 
 ### 3. Start Backend Server

@@ -1,6 +1,6 @@
 import type { Team, Sprint } from '../types';
 
-const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
 
 type TeamInput = Omit<Team, 'id' | 'createdAt'>;
 type SprintInput = Omit<Sprint, 'id' | 'createdAt' | 'completedAt'> & { 
