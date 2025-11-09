@@ -2,20 +2,8 @@
 Plan.mdc
 Requirements.mdc
 Wireframes.mdc
-README.md
-server/README.md
-client/README.md
 .git
-.gitignore
-*.test.ts
-*.test.js
-__tests__
-coverage
 .vscode
 .idea
 *.log
-client/src
-client/public
-client/node_modules
-server/scripts
 

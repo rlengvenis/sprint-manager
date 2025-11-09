@@ -13,6 +13,7 @@ export default defineConfig({
       overlay: true,
     },
   },
+  // @ts-ignore - test config for vitest
   test: {
     globals: true,
     environment: 'jsdom',
