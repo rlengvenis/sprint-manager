@@ -23,7 +23,7 @@ This deployment uses a **single Heroku app** that:
 1. Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 2. Create a database user (remember the username and password)
 3. Whitelist all IPs (0.0.0.0/0) under Network Access for Heroku
-4. Get your connection string (looks like: `mongodb+srv://username:password@cluster.mongodb.net/sprint-manager`)
+4. Get your connection string (looks like: `mongodb+srv://<username>:<password>@cluster.mongodb.net/sprint-manager`)
 
 ### 2. Login to Heroku
 
